@@ -3,10 +3,13 @@ import LoginPage from './Login';
 import Dashboard from './Dashboard';
 import GovLogin from './GovLogin';
 import GovDashboard from './GovDashboard';
+import HospitalLogin from './HospitalLogin';
+import HospitalDashboard from './HospitalDashboard';
 import { DarkModeProvider } from './contexts/DarkModeContext';
+import { Shield, Users, Hospital } from 'lucide-react';
 
 export default function App() {
-  const [userType, setUserType] = useState(null);
+  const [userType, setUserType] = useState(null); // 'citizen', 'government', or 'hospital'
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -22,17 +25,30 @@ export default function App() {
     setIsLoggedIn(true);
   };
 
+  const handleHospitalLogin = (userData) => {
+    setUser(userData);
+    setUserType('hospital');
+    setIsLoggedIn(true);
+  };
+
   const handleLogout = () => {
     setUser(null);
     setUserType(null);
     setIsLoggedIn(false);
   };
 
+  const handleBackToSelection = () => {
+    setUserType(null);
+    setIsLoggedIn(false);
+    setUser(null);
+  };
+
   return (
     <DarkModeProvider>
+      {/* Portal Selection Screen */}
       {!userType && !isLoggedIn && (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-          <div className="max-w-4xl w-full">
+          <div className="max-w-6xl w-full">
             <div className="text-center mb-12">
               <h1 className="text-4xl font-bold text-gray-900 mb-4">
                 E-Governance Nepal
@@ -42,11 +58,15 @@ export default function App() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
+              {/* Citizen Portal Card */}
               <div 
                 onClick={() => setUserType('citizen')}
-                className="bg-white rounded-2xl shadow-xl p-8 cursor-pointer hover:shadow-2xl transition"
+                className="bg-white rounded-2xl shadow-xl p-8 cursor-pointer hover:shadow-2xl transition transform hover:-translate-y-1"
               >
+                <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-4 mx-auto">
+                  <Users className="w-8 h-8 text-blue-600" />
+                </div>
                 <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
                   Citizen Portal
                 </h2>
@@ -58,10 +78,33 @@ export default function App() {
                 </button>
               </div>
 
+              {/* Hospital Portal Card */}
+              <div 
+                onClick={() => setUserType('hospital')}
+                className="bg-white rounded-2xl shadow-xl p-8 cursor-pointer hover:shadow-2xl transition transform hover:-translate-y-1"
+              >
+                <div className="bg-teal-100 w-16 h-16 rounded-full flex items-center justify-center mb-4 mx-auto">
+                  <Hospital className="w-8 h-8 text-teal-600" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
+                  Hospital Portal
+                </h2>
+                <p className="text-gray-600 text-center mb-6">
+                  Patient lookup and record management
+                </p>
+                <button className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition">
+                  Login as Hospital Staff
+                </button>
+              </div>
+
+              {/* Government Portal Card */}
               <div 
                 onClick={() => setUserType('government')}
-                className="bg-white rounded-2xl shadow-xl p-8 cursor-pointer hover:shadow-2xl transition"
+                className="bg-white rounded-2xl shadow-xl p-8 cursor-pointer hover:shadow-2xl transition transform hover:-translate-y-1"
               >
+                <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mb-4 mx-auto">
+                  <Shield className="w-8 h-8 text-indigo-600" />
+                </div>
                 <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
                   Government Portal
                 </h2>
@@ -73,22 +116,34 @@ export default function App() {
                 </button>
               </div>
             </div>
+
+            <p className="text-center text-sm text-gray-600 mt-8">
+              Ministry of Health and Population, Nepal
+            </p>
           </div>
         </div>
       )}
 
+      {/* Citizen Portal */}
       {userType === 'citizen' && !isLoggedIn && (
-        <LoginPage onLogin={handleCitizenLogin} />
+        <LoginPage onLogin={handleCitizenLogin} onBack={handleBackToSelection} />
       )}
-      
       {userType === 'citizen' && isLoggedIn && (
         <Dashboard user={user} onLogout={handleLogout} />
       )}
 
-      {userType === 'government' && !isLoggedIn && (
-        <GovLogin onLogin={handleGovLogin} />
+      {/* Hospital Portal */}
+      {userType === 'hospital' && !isLoggedIn && (
+        <HospitalLogin onLogin={handleHospitalLogin} onBack={handleBackToSelection} />
       )}
-      
+      {userType === 'hospital' && isLoggedIn && (
+        <HospitalDashboard user={user} onLogout={handleLogout} />
+      )}
+
+      {/* Government Portal */}
+      {userType === 'government' && !isLoggedIn && (
+        <GovLogin onLogin={handleGovLogin} onBack={handleBackToSelection} />
+      )}
       {userType === 'government' && isLoggedIn && (
         <GovDashboard user={user} onLogout={handleLogout} />
       )}
