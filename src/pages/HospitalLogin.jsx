@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Hospital, Moon, Sun } from 'lucide-react';
-import { useDarkMode } from './contexts/DarkModeContext';
+import { useDarkMode } from '../contexts/DarkModeContext';
 
 const mockHospitalUser = {
   id: 'hosp-001',
@@ -34,7 +34,7 @@ function HospitalLogin({ onLogin, onBack }) {
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-teal-100 dark:from-gray-900 dark:to-teal-900 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         {onBack && (
-          <button 
+          <button
             onClick={onBack}
             className="mb-4 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center"
           >
@@ -43,14 +43,14 @@ function HospitalLogin({ onLogin, onBack }) {
         )}
 
         <div className="flex justify-end mb-4">
-          <button 
+          <button
             onClick={toggleDarkMode}
             className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition"
           >
             {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
         </div>
-        
+
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <div className="bg-teal-600 p-4 rounded-2xl shadow-lg">

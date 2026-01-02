@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Search, FileText, Calendar, Hospital, User, LogOut, Menu, X, Activity, Shield, Bell, Moon, Sun } from 'lucide-react';
-import { useDarkMode } from './contexts/DarkModeContext';
+import { useDarkMode } from '../contexts/DarkModeContext';
 
 const mockHealthRecords = [
   {
@@ -92,7 +92,7 @@ function Dashboard({ user, onLogout }) {
             </div>
 
             <div className="flex items-center space-x-4">
-              <button 
+              <button
                 onClick={toggleDarkMode}
                 className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition"
               >

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Shield, Moon, Sun } from 'lucide-react';
-import { useDarkMode } from './contexts/DarkModeContext';
+import { useDarkMode } from '../contexts/DarkModeContext';
 
 const mockUser = {
   nid_number: '1234567890',
@@ -45,14 +45,14 @@ function Login({ onLogin, onBack  }) {
         
         {/* Dark Mode Toggle */}
         <div className="flex justify-end mb-4">
-          <button 
+          <button
             onClick={toggleDarkMode}
             className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition"
           >
             {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
         </div>
-        
+
         {/* Logo and Title */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">

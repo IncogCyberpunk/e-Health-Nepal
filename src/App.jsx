@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import LoginPage from './Login';
-import Dashboard from './Dashboard';
-import GovLogin from './GovLogin';
-import GovDashboard from './GovDashboard';
-import HospitalLogin from './HospitalLogin';
-import HospitalDashboard from './HospitalDashboard';
+import LoginPage from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import GovLogin from './pages/GovLogin';
+import GovDashboard from './pages/GovDashboard';
+import HospitalLogin from './pages/HospitalLogin';
+import HospitalDashboard from './pages/HospitalDashboard';
+
 import { DarkModeProvider } from './contexts/DarkModeContext';
 import { Shield, Users, Hospital } from 'lucide-react';
 
@@ -98,7 +99,7 @@ export default function App() {
               </div>
 
               {/* Government Portal Card */}
-              {/* <div 
+              {/* <div
                 onClick={() => setUserType('government')}
                 className="bg-white rounded-2xl shadow-xl p-8 cursor-pointer hover:shadow-2xl transition transform hover:-translate-y-1"
               >
