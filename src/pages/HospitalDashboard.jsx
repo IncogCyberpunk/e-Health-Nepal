@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { 
-  Hospital, LogOut, Search, User, FileText, Activity, 
+import {
+  Hospital, LogOut, Search, User, FileText, Activity,
   AlertCircle, Calendar, Stethoscope, Plus, X, Save,
   Clock, Moon, Sun, Menu, CheckCircle, Download
 } from 'lucide-react';
-import { useDarkMode } from './contexts/DarkModeContext';
+import { useDarkMode } from '../contexts/DarkModeContext';
 
 // Mock patient database (in real app, this would come from Supabase)
 const mockPatients = {
@@ -107,7 +107,7 @@ function HospitalDashboard({ user, onLogout }) {
 
     // In real app, this would save to Supabase
     selectedPatient.records.unshift(record);
-    
+
     setShowAddRecord(false);
     setNewRecord({
       type: 'prescription',
@@ -115,7 +115,7 @@ function HospitalDashboard({ user, onLogout }) {
       prescription: '',
       notes: ''
     });
-    
+
     alert('Record added successfully!');
   };
 
@@ -158,7 +158,7 @@ function HospitalDashboard({ user, onLogout }) {
             </div>
 
             <div className="flex items-center space-x-4">
-              <button 
+              <button
                 onClick={toggleDarkMode}
                 className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition"
               >
@@ -380,7 +380,7 @@ function HospitalDashboard({ user, onLogout }) {
                 </label>
                 <select
                   value={newRecord.type}
-                  onChange={(e) => setNewRecord({...newRecord, type: e.target.value})}
+                  onChange={(e) => setNewRecord({ ...newRecord, type: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none dark:bg-gray-700 dark:text-white"
                 >
                   <option value="prescription">Prescription</option>
@@ -397,7 +397,7 @@ function HospitalDashboard({ user, onLogout }) {
                 </label>
                 <textarea
                   value={newRecord.diagnosis}
-                  onChange={(e) => setNewRecord({...newRecord, diagnosis: e.target.value})}
+                  onChange={(e) => setNewRecord({ ...newRecord, diagnosis: e.target.value })}
                   placeholder="Enter diagnosis or reason for visit..."
                   rows="3"
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none dark:bg-gray-700 dark:text-white"
@@ -410,7 +410,7 @@ function HospitalDashboard({ user, onLogout }) {
                 </label>
                 <textarea
                   value={newRecord.prescription}
-                  onChange={(e) => setNewRecord({...newRecord, prescription: e.target.value})}
+                  onChange={(e) => setNewRecord({ ...newRecord, prescription: e.target.value })}
                   placeholder="Enter prescription or treatment plan..."
                   rows="3"
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none dark:bg-gray-700 dark:text-white"
@@ -423,7 +423,7 @@ function HospitalDashboard({ user, onLogout }) {
                 </label>
                 <textarea
                   value={newRecord.notes}
-                  onChange={(e) => setNewRecord({...newRecord, notes: e.target.value})}
+                  onChange={(e) => setNewRecord({ ...newRecord, notes: e.target.value })}
                   placeholder="Any additional observations or notes..."
                   rows="2"
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none dark:bg-gray-700 dark:text-white"
