@@ -4,549 +4,549 @@
     "name": "Chase Inc Private Ltd.",
     "type": "clinic",
     "ownership": "private",
-    "address": "Ward No.3-Bhojpur Bhojpur, Nepal",
-    "phone": "01-8738570",
     "is_active": true,
     "created_at": "2025-08-26T13:18:51.080997",
-    "license_number": "HLT-94391370"
+    "license_number": "HLT-94391370",
+    "address": "Ward No.3-Bhojpur Bhojpur, Nepal",
+    "phone": "01-8738570"
   },
   {
     "institute_id": 2,
     "name": "Proctor, Hoffman and Gonzales Private Ltd.",
     "type": "clinic",
     "ownership": "private",
-    "address": "Ward No.3-Gaur Rautahat, Nepal",
-    "phone": "01-8379213",
     "is_active": true,
-    "created_at": "2025-09-14T17:04:00.642810",
-    "license_number": "MED-16822608"
+    "created_at": "2025-09-14T17:04:00.64281",
+    "license_number": "MED-16822608",
+    "address": "Ward No.3-Gaur Rautahat, Nepal",
+    "phone": "01-8379213"
   },
   {
     "institute_id": 3,
     "name": "Williamson PLC Hospital",
     "type": "hospital",
     "ownership": "government",
-    "address": "Ward No.3-Gokarneshwar Kathmandu, Nepal",
-    "phone": "01-3715193",
     "is_active": true,
     "created_at": "2020-06-12T11:01:13.283356",
-    "license_number": "MED-78449883"
+    "license_number": "MED-78449883",
+    "address": "Ward No.3-Gokarneshwar Kathmandu, Nepal",
+    "phone": "01-3715193"
   },
   {
     "institute_id": 4,
     "name": "Smith, Wallace and Ramirez",
     "type": "hospital",
     "ownership": "government",
-    "address": "Ward No.10-Galkot Baglung, Nepal",
-    "phone": "01-7381133",
     "is_active": true,
-    "created_at": "2022-09-04T01:05:57.162800",
-    "license_number": "HLT-49462455"
+    "created_at": "2022-09-04T01:05:57.1628",
+    "license_number": "HLT-49462455",
+    "address": "Ward No.10-Galkot Baglung, Nepal",
+    "phone": "01-7381133"
   },
   {
     "institute_id": 5,
     "name": "Johnson-Chase Private Ltd.",
     "type": "health_post",
     "ownership": "private",
-    "address": "Ward No.9-Brindaban Rautahat, Nepal",
-    "phone": "01-0053558",
     "is_active": true,
-    "created_at": "2023-02-12T01:21:54.552620",
-    "license_number": "LIC-34811808"
+    "created_at": "2023-02-12T01:21:54.55262",
+    "license_number": "LIC-34811808",
+    "address": "Ward No.9-Brindaban Rautahat, Nepal",
+    "phone": "01-0053558"
   },
   {
     "institute_id": 6,
     "name": "Cunningham Ltd Private Ltd.",
     "type": "health_post",
     "ownership": "government",
-    "address": "Ward No.7-Kalika Chitwan, Nepal",
-    "phone": "01-3850284",
     "is_active": true,
     "created_at": "2022-12-15T15:20:41.626952",
-    "license_number": "MED-98258753"
+    "license_number": "MED-98258753",
+    "address": "Ward No.7-Kalika Chitwan, Nepal",
+    "phone": "01-3850284"
   },
   {
     "institute_id": 7,
     "name": "Jones-Watson Private Ltd.",
     "type": "health_post",
     "ownership": "government",
-    "address": "Ward No.4-Nagarjun Kathmandu, Nepal",
-    "phone": "01-4153307",
     "is_active": true,
     "created_at": "2024-08-20T02:37:39.575531",
-    "license_number": "LIC-66670633"
+    "license_number": "LIC-66670633",
+    "address": "Ward No.4-Nagarjun Kathmandu, Nepal",
+    "phone": "01-4153307"
   },
   {
     "institute_id": 8,
     "name": "Garcia Inc Hospital",
     "type": "hospital",
     "ownership": "government",
-    "address": "Ward No.4-Baglung Baglung, Nepal",
-    "phone": "01-6119553",
     "is_active": true,
     "created_at": "2020-02-26T01:47:40.885675",
-    "license_number": "MED-37313403"
+    "license_number": "MED-37313403",
+    "address": "Ward No.4-Baglung Baglung, Nepal",
+    "phone": "01-6119553"
   },
   {
     "institute_id": 9,
     "name": "Vasquez-Jones",
     "type": "hospital",
     "ownership": "government",
-    "address": "Ward No.4-Madhuwan Bardiya, Nepal",
-    "phone": "01-7037930",
     "is_active": true,
     "created_at": "2022-06-27T13:28:23.756813",
-    "license_number": "HLT-89200458"
+    "license_number": "HLT-89200458",
+    "address": "Ward No.4-Madhuwan Bardiya, Nepal",
+    "phone": "01-7037930"
   },
   {
     "institute_id": 10,
     "name": "Williams and Sons Private Ltd.",
     "type": "hospital",
     "ownership": "government",
-    "address": "Ward No.7-Ratuwamai Morang, Nepal",
-    "phone": "01-1624742",
     "is_active": true,
     "created_at": "2021-10-16T22:30:49.082459",
-    "license_number": "MED-84732550"
+    "license_number": "MED-84732550",
+    "address": "Ward No.7-Ratuwamai Morang, Nepal",
+    "phone": "01-1624742"
   },
   {
     "institute_id": 11,
     "name": "Landry-Davenport Private Ltd.",
     "type": "clinic",
     "ownership": "government",
-    "address": "Ward No.6-Tokha Kathmandu, Nepal",
-    "phone": "01-9905367",
     "is_active": true,
     "created_at": "2023-10-01T11:08:23.815238",
-    "license_number": "MED-12072095"
+    "license_number": "MED-12072095",
+    "address": "Ward No.6-Tokha Kathmandu, Nepal",
+    "phone": "01-9905367"
   },
   {
     "institute_id": 12,
     "name": "Dunn-Stanley Private Ltd.",
     "type": "health_post",
     "ownership": "private",
-    "address": "Ward No.2-Namobuddha Kavrepalanchok, Nepal",
-    "phone": "01-9035508",
     "is_active": true,
-    "created_at": "2020-08-04T13:16:46.049950",
-    "license_number": "HLT-96844565"
+    "created_at": "2020-08-04T13:16:46.04995",
+    "license_number": "HLT-96844565",
+    "address": "Ward No.2-Namobuddha Kavrepalanchok, Nepal",
+    "phone": "01-9035508"
   },
   {
     "institute_id": 13,
     "name": "Griffin, Shea and Terry",
     "type": "hospital",
     "ownership": "private",
-    "address": "Ward No.4-Deumai Ilam, Nepal",
-    "phone": "01-8174420",
     "is_active": true,
     "created_at": "2025-10-28T07:15:02.225106",
-    "license_number": "LIC-40515567"
+    "license_number": "LIC-40515567",
+    "address": "Ward No.4-Deumai Ilam, Nepal",
+    "phone": "01-8174420"
   },
   {
     "institute_id": 14,
     "name": "Smith-Cobb Private Ltd.",
     "type": "clinic",
     "ownership": "private",
-    "address": "Ward No.13-Lalbandi Sarlahi, Nepal",
-    "phone": "01-0167599",
     "is_active": true,
     "created_at": "2024-01-30T17:39:34.043662",
-    "license_number": "HLT-00134140"
+    "license_number": "HLT-00134140",
+    "address": "Ward No.13-Lalbandi Sarlahi, Nepal",
+    "phone": "01-0167599"
   },
   {
     "institute_id": 15,
     "name": "Rojas-Ryan Health_post",
     "type": "health_post",
     "ownership": "private",
-    "address": "Ward No.5-Mithila Bihari Dhanusa, Nepal",
-    "phone": "01-6709144",
     "is_active": true,
     "created_at": "2025-09-22T13:05:08.879126",
-    "license_number": "HLT-54840000"
+    "license_number": "HLT-54840000",
+    "address": "Ward No.5-Mithila Bihari Dhanusa, Nepal",
+    "phone": "01-6709144"
   },
   {
     "institute_id": 16,
     "name": "Johnson-Carter Private Ltd.",
     "type": "health_post",
     "ownership": "government",
-    "address": "Ward No.6-Thakurbaba Bardiya, Nepal",
-    "phone": "01-6454976",
     "is_active": true,
     "created_at": "2023-03-05T04:49:27.624604",
-    "license_number": "HLT-34875256"
+    "license_number": "HLT-34875256",
+    "address": "Ward No.6-Thakurbaba Bardiya, Nepal",
+    "phone": "01-6454976"
   },
   {
     "institute_id": 17,
     "name": "Campbell PLC Health_post",
     "type": "health_post",
     "ownership": "private",
-    "address": "Ward No.5-Myanglung Terathum, Nepal",
-    "phone": "01-9924662",
     "is_active": true,
     "created_at": "2021-11-24T18:29:00.088855",
-    "license_number": "LIC-60138079"
+    "license_number": "LIC-60138079",
+    "address": "Ward No.5-Myanglung Terathum, Nepal",
+    "phone": "01-9924662"
   },
   {
     "institute_id": 18,
     "name": "Rodgers-Davis Private Ltd.",
     "type": "hospital",
     "ownership": "government",
-    "address": "Ward No.3-Mahalaxmi Lalitpur, Nepal",
-    "phone": "01-8121652",
     "is_active": true,
     "created_at": "2024-02-03T11:42:49.016449",
-    "license_number": "HLT-50815959"
+    "license_number": "HLT-50815959",
+    "address": "Ward No.3-Mahalaxmi Lalitpur, Nepal",
+    "phone": "01-8121652"
   },
   {
     "institute_id": 19,
     "name": "Parker Inc Private Ltd.",
     "type": "clinic",
     "ownership": "private",
-    "address": "Ward No.4-Gulariya Bardiya, Nepal",
-    "phone": "01-5071741",
     "is_active": true,
-    "created_at": "2023-10-18T07:34:53.951350",
-    "license_number": "MED-47763103"
+    "created_at": "2023-10-18T07:34:53.95135",
+    "license_number": "MED-47763103",
+    "address": "Ward No.4-Gulariya Bardiya, Nepal",
+    "phone": "01-5071741"
   },
   {
     "institute_id": 20,
     "name": "Haynes Inc Clinic",
     "type": "clinic",
     "ownership": "government",
-    "address": "Ward No.3-Suryabinayak Bhaktapur, Nepal",
-    "phone": "01-9767025",
     "is_active": true,
     "created_at": "2021-11-05T02:23:56.392354",
-    "license_number": "LIC-61684446"
+    "license_number": "LIC-61684446",
+    "address": "Ward No.3-Suryabinayak Bhaktapur, Nepal",
+    "phone": "01-9767025"
   },
   {
     "institute_id": 21,
     "name": "Barnes, Diaz and Vaughan Hospital",
     "type": "hospital",
     "ownership": "government",
-    "address": "Ward No.17-Lalbandi Sarlahi, Nepal",
-    "phone": "01-8924418",
     "is_active": true,
     "created_at": "2021-05-15T00:15:02.226553",
-    "license_number": "MED-81137244"
+    "license_number": "MED-81137244",
+    "address": "Ward No.17-Lalbandi Sarlahi, Nepal",
+    "phone": "01-8924418"
   },
   {
     "institute_id": 22,
     "name": "Mahoney-Larson Private Ltd.",
     "type": "clinic",
     "ownership": "private",
-    "address": "Ward No.11-Godawari Lalitpur, Nepal",
-    "phone": "01-2975914",
     "is_active": true,
     "created_at": "2025-07-01T05:14:38.137761",
-    "license_number": "LIC-48940094"
+    "license_number": "LIC-48940094",
+    "address": "Ward No.11-Godawari Lalitpur, Nepal",
+    "phone": "01-2975914"
   },
   {
     "institute_id": 23,
     "name": "Morgan-Hodges Clinic",
     "type": "clinic",
     "ownership": "government",
-    "address": "Ward No.6-Saptakoshi Saptari, Nepal",
-    "phone": "01-8463924",
     "is_active": true,
     "created_at": "2023-05-14T05:44:11.537517",
-    "license_number": "HLT-87807376"
+    "license_number": "HLT-87807376",
+    "address": "Ward No.6-Saptakoshi Saptari, Nepal",
+    "phone": "01-8463924"
   },
   {
     "institute_id": 24,
     "name": "Little, Trujillo and Barnes Private Ltd.",
     "type": "health_post",
     "ownership": "government",
-    "address": "Ward No.8-Gauradaha Jhapa, Nepal",
-    "phone": "01-4973780",
     "is_active": true,
     "created_at": "2021-12-06T13:22:31.483828",
-    "license_number": "MED-42519187"
+    "license_number": "MED-42519187",
+    "address": "Ward No.8-Gauradaha Jhapa, Nepal",
+    "phone": "01-4973780"
   },
   {
     "institute_id": 25,
     "name": "Henderson PLC",
     "type": "clinic",
     "ownership": "government",
-    "address": "Ward No.10-Dakneshwari Saptari, Nepal",
-    "phone": "01-9747676",
     "is_active": true,
     "created_at": "2022-07-21T13:08:52.484281",
-    "license_number": "HLT-60919193"
+    "license_number": "HLT-60919193",
+    "address": "Ward No.10-Dakneshwari Saptari, Nepal",
+    "phone": "01-9747676"
   },
   {
     "institute_id": 26,
     "name": "Martin-Roberson Clinic",
     "type": "clinic",
     "ownership": "private",
-    "address": "Ward No.9-Nilkantha Dhading, Nepal",
-    "phone": "01-2599317",
     "is_active": true,
-    "created_at": "2022-08-12T18:14:38.764350",
-    "license_number": "HLT-97085675"
+    "created_at": "2022-08-12T18:14:38.76435",
+    "license_number": "HLT-97085675",
+    "address": "Ward No.9-Nilkantha Dhading, Nepal",
+    "phone": "01-2599317"
   },
   {
     "institute_id": 27,
     "name": "Wilson, Fuller and Singleton Clinic",
     "type": "clinic",
     "ownership": "private",
-    "address": "Ward No.9-Badimalika Bajura, Nepal",
-    "phone": "01-6396704",
     "is_active": true,
     "created_at": "2025-02-20T04:40:34.430295",
-    "license_number": "LIC-77714057"
+    "license_number": "LIC-77714057",
+    "address": "Ward No.9-Badimalika Bajura, Nepal",
+    "phone": "01-6396704"
   },
   {
     "institute_id": 28,
     "name": "Duffy-Brown Private Ltd.",
     "type": "hospital",
     "ownership": "government",
-    "address": "Ward No.1-Hansapur Dhanusha, Nepal",
-    "phone": "01-5015544",
     "is_active": true,
     "created_at": "2023-09-17T01:15:22.914477",
-    "license_number": "MED-09985752"
+    "license_number": "MED-09985752",
+    "address": "Ward No.1-Hansapur Dhanusha, Nepal",
+    "phone": "01-5015544"
   },
   {
     "institute_id": 29,
     "name": "Price-Soto",
     "type": "hospital",
     "ownership": "private",
-    "address": "Ward No.1-Sitganga Arghakhanchi, Nepal",
-    "phone": "01-7448455",
     "is_active": true,
     "created_at": "2024-05-26T00:32:19.143117",
-    "license_number": "LIC-76633542"
+    "license_number": "LIC-76633542",
+    "address": "Ward No.1-Sitganga Arghakhanchi, Nepal",
+    "phone": "01-7448455"
   },
   {
     "institute_id": 30,
     "name": "Erickson LLC",
     "type": "clinic",
     "ownership": "private",
-    "address": "Ward No.6-Rajapur Bardiya, Nepal",
-    "phone": "01-0953072",
     "is_active": true,
     "created_at": "2022-10-28T23:04:58.394713",
-    "license_number": "MED-72827695"
+    "license_number": "MED-72827695",
+    "address": "Ward No.6-Rajapur Bardiya, Nepal",
+    "phone": "01-0953072"
   },
   {
     "institute_id": 31,
     "name": "Romero, Hawkins and Brown Private Ltd.",
     "type": "hospital",
     "ownership": "government",
-    "address": "Ward No.9-Bahudarmai Parsa, Nepal",
-    "phone": "01-8942660",
     "is_active": true,
     "created_at": "2021-05-29T23:34:38.745258",
-    "license_number": "LIC-69802764"
+    "license_number": "LIC-69802764",
+    "address": "Ward No.9-Bahudarmai Parsa, Nepal",
+    "phone": "01-8942660"
   },
   {
     "institute_id": 32,
     "name": "Weaver-May Clinic",
     "type": "clinic",
     "ownership": "government",
-    "address": "Ward No.6-Bedkot Kanchanpur, Nepal",
-    "phone": "01-9435007",
     "is_active": true,
     "created_at": "2023-08-16T03:29:17.923476",
-    "license_number": "MED-61653777"
+    "license_number": "MED-61653777",
+    "address": "Ward No.6-Bedkot Kanchanpur, Nepal",
+    "phone": "01-9435007"
   },
   {
     "institute_id": 33,
     "name": "Fox, Taylor and Henry Private Ltd.",
     "type": "hospital",
     "ownership": "private",
-    "address": "Ward No.9-Puchaudi Baitadi, Nepal",
-    "phone": "01-6491916",
     "is_active": true,
     "created_at": "2021-02-27T11:33:58.929402",
-    "license_number": "MED-69507259"
+    "license_number": "MED-69507259",
+    "address": "Ward No.9-Puchaudi Baitadi, Nepal",
+    "phone": "01-6491916"
   },
   {
     "institute_id": 34,
     "name": "Cooper Inc Clinic",
     "type": "clinic",
     "ownership": "government",
-    "address": "Ward No.2-Inaruwa Sunsari, Nepal",
-    "phone": "01-6915697",
     "is_active": true,
     "created_at": "2023-03-09T00:24:04.359642",
-    "license_number": "MED-79823070"
+    "license_number": "MED-79823070",
+    "address": "Ward No.2-Inaruwa Sunsari, Nepal",
+    "phone": "01-6915697"
   },
   {
     "institute_id": 35,
     "name": "Warren and Sons Private Ltd.",
     "type": "health_post",
     "ownership": "government",
-    "address": "Ward No.4-Bidur Nuwakot, Nepal",
-    "phone": "01-3490237",
     "is_active": true,
     "created_at": "2021-10-19T08:17:47.000342",
-    "license_number": "HLT-26924941"
+    "license_number": "HLT-26924941",
+    "address": "Ward No.4-Bidur Nuwakot, Nepal",
+    "phone": "01-3490237"
   },
   {
     "institute_id": 36,
     "name": "Smith, Horton and Chambers Hospital",
     "type": "hospital",
     "ownership": "government",
-    "address": "Ward No.6-Mahalaxmi Dhankuta, Nepal",
-    "phone": "01-5991129",
     "is_active": true,
     "created_at": "2025-02-01T04:09:02.970578",
-    "license_number": "HLT-64031182"
+    "license_number": "HLT-64031182",
+    "address": "Ward No.6-Mahalaxmi Dhankuta, Nepal",
+    "phone": "01-5991129"
   },
   {
     "institute_id": 37,
     "name": "Murray, Greene and Davis Clinic",
     "type": "clinic",
     "ownership": "private",
-    "address": "Ward No.11-Gaushala Mahottari, Nepal",
-    "phone": "01-6595112",
     "is_active": true,
-    "created_at": "2020-03-01T07:33:26.847370",
-    "license_number": "HLT-33905966"
+    "created_at": "2020-03-01T07:33:26.84737",
+    "license_number": "HLT-33905966",
+    "address": "Ward No.11-Gaushala Mahottari, Nepal",
+    "phone": "01-6595112"
   },
   {
     "institute_id": 38,
     "name": "Reynolds, Riley and Moore Health_post",
     "type": "health_post",
     "ownership": "government",
-    "address": "Ward No.2-Nijgadh Bara, Nepal",
-    "phone": "01-9438375",
     "is_active": true,
     "created_at": "2025-04-15T15:03:39.392699",
-    "license_number": "HLT-42884637"
+    "license_number": "HLT-42884637",
+    "address": "Ward No.2-Nijgadh Bara, Nepal",
+    "phone": "01-9438375"
   },
   {
     "institute_id": 39,
     "name": "Mendoza, Parker and Pierce Private Ltd.",
     "type": "health_post",
     "ownership": "government",
-    "address": "Ward No.8-Chandrapur Rautahat, Nepal",
-    "phone": "01-5030277",
     "is_active": true,
     "created_at": "2024-09-29T18:32:56.518763",
-    "license_number": "MED-17931625"
+    "license_number": "MED-17931625",
+    "address": "Ward No.8-Chandrapur Rautahat, Nepal",
+    "phone": "01-5030277"
   },
   {
     "institute_id": 40,
     "name": "Rush LLC Private Ltd.",
     "type": "hospital",
     "ownership": "government",
-    "address": "Ward No.6-Banepa Kavrepalanchok, Nepal",
-    "phone": "01-5326799",
     "is_active": true,
     "created_at": "2020-11-15T14:23:37.369047",
-    "license_number": "HLT-48372687"
+    "license_number": "HLT-48372687",
+    "address": "Ward No.6-Banepa Kavrepalanchok, Nepal",
+    "phone": "01-5326799"
   },
   {
     "institute_id": 41,
     "name": "Freeman, Dyer and Gross Private Ltd.",
     "type": "clinic",
     "ownership": "private",
-    "address": "Ward No.2-Mechinagar Jhapa, Nepal",
-    "phone": "01-8949128",
     "is_active": true,
-    "created_at": "2025-10-23T10:54:04.520350",
-    "license_number": "MED-72877478"
+    "created_at": "2025-10-23T10:54:04.52035",
+    "license_number": "MED-72877478",
+    "address": "Ward No.2-Mechinagar Jhapa, Nepal",
+    "phone": "01-8949128"
   },
   {
     "institute_id": 42,
     "name": "Calhoun-Miller Private Ltd.",
     "type": "hospital",
     "ownership": "government",
-    "address": "Ward No.3-Budhiganga Bajura, Nepal",
-    "phone": "01-4076296",
     "is_active": true,
     "created_at": "2025-03-15T04:22:26.529479",
-    "license_number": "MED-65241573"
+    "license_number": "MED-65241573",
+    "address": "Ward No.3-Budhiganga Bajura, Nepal",
+    "phone": "01-4076296"
   },
   {
     "institute_id": 43,
     "name": "Wade Inc Private Ltd.",
     "type": "hospital",
     "ownership": "private",
-    "address": "Ward No.2-Mahakali Darchula, Nepal",
-    "phone": "01-2040410",
     "is_active": true,
     "created_at": "2022-10-06T12:33:29.434993",
-    "license_number": "HLT-19129433"
+    "license_number": "HLT-19129433",
+    "address": "Ward No.2-Mahakali Darchula, Nepal",
+    "phone": "01-2040410"
   },
   {
     "institute_id": 44,
     "name": "Brown-Frost Health_post",
     "type": "health_post",
     "ownership": "private",
-    "address": "Ward No.3-Shailyashikhar Darchula, Nepal",
-    "phone": "01-6578149",
     "is_active": true,
     "created_at": "2022-05-17T22:53:45.186209",
-    "license_number": "LIC-55019353"
+    "license_number": "LIC-55019353",
+    "address": "Ward No.3-Shailyashikhar Darchula, Nepal",
+    "phone": "01-6578149"
   },
   {
     "institute_id": 45,
     "name": "Stanley Inc Private Ltd.",
     "type": "hospital",
     "ownership": "government",
-    "address": "Ward No.6-Belbari Morang, Nepal",
-    "phone": "01-1584567",
     "is_active": true,
     "created_at": "2025-01-24T01:03:03.121958",
-    "license_number": "LIC-13700174"
+    "license_number": "LIC-13700174",
+    "address": "Ward No.6-Belbari Morang, Nepal",
+    "phone": "01-1584567"
   },
   {
     "institute_id": 46,
     "name": "Lee, Stein and Hayes Health_post",
     "type": "health_post",
     "ownership": "private",
-    "address": "Ward No.7-Rajbiraj Saptari, Nepal",
-    "phone": "01-6073021",
     "is_active": true,
     "created_at": "2024-03-27T23:15:12.738122",
-    "license_number": "MED-73733970"
+    "license_number": "MED-73733970",
+    "address": "Ward No.7-Rajbiraj Saptari, Nepal",
+    "phone": "01-6073021"
   },
   {
     "institute_id": 47,
     "name": "Skinner Inc",
     "type": "health_post",
     "ownership": "private",
-    "address": "Ward No.1-Jaleshwar Mahottari, Nepal",
-    "phone": "01-1492621",
     "is_active": true,
     "created_at": "2024-12-19T09:04:11.858566",
-    "license_number": "MED-89224006"
+    "license_number": "MED-89224006",
+    "address": "Ward No.1-Jaleshwar Mahottari, Nepal",
+    "phone": "01-1492621"
   },
   {
     "institute_id": 48,
     "name": "Clark Group Hospital",
     "type": "hospital",
     "ownership": "government",
-    "address": "Ward No.5-Lumbini Sanskritik Rupandehi, Nepal",
-    "phone": "01-5496602",
     "is_active": true,
-    "created_at": "2025-07-01T10:34:40.296470",
-    "license_number": "HLT-51435804"
+    "created_at": "2025-07-01T10:34:40.29647",
+    "license_number": "HLT-51435804",
+    "address": "Ward No.5-Lumbini Sanskritik Rupandehi, Nepal",
+    "phone": "01-5496602"
   },
   {
     "institute_id": 49,
     "name": "Miller-Greer Health_post",
     "type": "health_post",
     "ownership": "private",
-    "address": "Ward No.1-Dullu Dailekh, Nepal",
-    "phone": "01-0045015",
     "is_active": true,
     "created_at": "2024-06-25T06:56:24.204204",
-    "license_number": "HLT-11959602"
+    "license_number": "HLT-11959602",
+    "address": "Ward No.1-Dullu Dailekh, Nepal",
+    "phone": "01-0045015"
   },
   {
     "institute_id": 50,
     "name": "Sullivan-Deleon Health_post",
     "type": "health_post",
     "ownership": "private",
-    "address": "Ward No.1-Madi Chitwan, Nepal",
-    "phone": "01-4779660",
     "is_active": true,
     "created_at": "2025-02-01T19:44:57.161896",
-    "license_number": "MED-48562575"
+    "license_number": "MED-48562575",
+    "address": "Ward No.1-Madi Chitwan, Nepal",
+    "phone": "01-4779660"
   }
 ]

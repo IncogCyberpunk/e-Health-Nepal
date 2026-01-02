@@ -20,11 +20,11 @@ export default function App() {
     setIsLoggedIn(true);
   };
 
-  // const handleGovLogin = (userData) => {
-  //   setUser(userData);
-  //   setUserType('government');
-  //   setIsLoggedIn(true);
-  // };
+  const handleGovLogin = (userData) => {
+    setUser(userData);
+    setUserType('government');
+    setIsLoggedIn(true);
+  };
 
   const handleHospitalLogin = (userData) => {
     setUser(userData);
@@ -48,7 +48,7 @@ export default function App() {
     <DarkModeProvider>
       {/* Portal Selection Screen */}
       {!userType && !isLoggedIn && (
-        <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center flex-col p-4">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center flex-col p-4">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               E-Governance Nepal
@@ -99,7 +99,7 @@ export default function App() {
               </div>
 
               {/* Government Portal Card */}
-              {/* <div
+              <div
                 onClick={() => setUserType('government')}
                 className="bg-white rounded-2xl shadow-xl p-8 cursor-pointer hover:shadow-2xl transition transform hover:-translate-y-1"
               >
@@ -115,7 +115,7 @@ export default function App() {
                 <button className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">
                   Login as Administrator
                 </button>
-              </div> */}
+              </div>
             </div>
           </div>
 
@@ -142,13 +142,13 @@ export default function App() {
         <HospitalDashboard user={user} onLogout={handleLogout} />
       )}
 
-      {/* Government Portal
+      {/* Government Portal */}
       {userType === 'government' && !isLoggedIn && (
         <GovLogin onLogin={handleGovLogin} onBack={handleBackToSelection} />
       )}
       {userType === 'government' && isLoggedIn && (
         <GovDashboard user={user} onLogout={handleLogout} />
-      )} */}
+      )}
     </DarkModeProvider>
   );
 }

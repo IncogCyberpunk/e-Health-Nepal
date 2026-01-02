@@ -7998,21 +7998,5 @@
     "eligibility_reason": "Retirement Benefit Scheme",
     "valid_from": "2022-08-05",
     "valid_until": "2023-06-15"
-  },
-  {
-    "entitlement_id": 1001,
-    "nid_number": "936-427-379-5",
-    "entitlement_type": "Senior",
-    "eligibility_reason": "Age-based subsidy (Over 65)",
-    "valid_from": "2024-02-06",
-    "valid_until": "2027-11-21"
-  },
-  {
-    "entitlement_id": 1002,
-    "nid_number": "936-427-379-5",
-    "entitlement_type": "Maternity",
-    "eligibility_reason": "Post-delivery Support",
-    "valid_from": "2024-12-30",
-    "valid_until": "2025-08-19"
   }
 ]
