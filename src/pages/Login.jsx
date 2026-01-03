@@ -1,39 +1,76 @@
 import React, { useState } from 'react';
-import { Shield, Moon, Sun } from 'lucide-react';
+import { Shield, Moon, Sun, Loader, AlertCircle } from 'lucide-react';
 import { useDarkMode } from '../contexts/DarkModeContext';
+import { createClient } from '@supabase/supabase-js';
 
-const mockUser = {
-  nid_number: '1234567890',
-  full_name: 'Ram Bahadur Thapa',
-  date_of_birth: '1985-05-15',
-  blood_group: 'A+',
-  phone: '+977-9801234567',
-  email: 'ram.thapa@email.com',
-  address: 'Kathmandu, Nepal'
-};
+// Initialize Supabase client
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
+);
 
-function Login({ onLogin, onBack  }) {
+function Login({ onLogin, onBack }) {
   const [nidNumber, setNidNumber] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    if (!nidNumber.trim()) {
+      setError('Please enter your NID number');
+      return;
+    }
+
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      if (nidNumber === '1234567890') {
-        onLogin(mockUser);
-      } else {
-        alert('Invalid NID number. Try: 1234567890');
+    setError('');
+
+    try {
+      // Fetch citizen data from Supabase
+      const { data: citizenData, error: citizenError } = await supabase
+        .from('citizens')
+        .select('*')
+        .eq('nid_number', nidNumber.trim())
+        .single();
+
+      if (citizenError) {
+        if (citizenError.code === 'PGRST116') {
+          setError('NID number not found. Please check and try again.');
+        } else {
+          setError('Error: ' + citizenError.message);
+        }
+        setLoading(false);
+        return;
       }
+
+      // Calculate age
+      const dob = new Date(citizenData.date_of_birth);
+      const today = new Date();
+      const age = today.getFullYear() - dob.getFullYear() - 
+        (today.getMonth() < dob.getMonth() || 
+         (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate()) ? 1 : 0);
+
+      // Pass citizen data to parent
+      onLogin({
+        ...citizenData,
+        age: age
+      });
+    } catch (err) {
+      setError('An unexpected error occurred: ' + err.message);
+      console.error('Login error:', err);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !loading) {
+      handleLogin();
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-900 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
-        {/* Add Back Button */}
         {onBack && (
           <button 
             onClick={onBack}
@@ -43,7 +80,6 @@ function Login({ onLogin, onBack  }) {
           </button>
         )}
         
-        {/* Dark Mode Toggle */}
         <div className="flex justify-end mb-4">
           <button
             onClick={toggleDarkMode}
@@ -53,7 +89,6 @@ function Login({ onLogin, onBack  }) {
           </button>
         </div>
 
-        {/* Logo and Title */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <div className="bg-indigo-600 p-4 rounded-2xl shadow-lg">
@@ -64,9 +99,15 @@ function Login({ onLogin, onBack  }) {
           <p className="text-gray-600 dark:text-gray-300">Centralized Health Records System</p>
         </div>
 
-        {/* Login Card */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
           <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6">Citizen Login</h2>
+
+          {error && (
+            <div className="mb-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 flex items-start">
+              <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 mr-2 flex-shrink-0" />
+              <p className="text-red-800 dark:text-red-200 text-sm">{error}</p>
+            </div>
+          )}
 
           <div>
             <div className="mb-6">
@@ -77,18 +118,26 @@ function Login({ onLogin, onBack  }) {
                 type="text"
                 value={nidNumber}
                 onChange={(e) => setNidNumber(e.target.value)}
-                placeholder="Enter your NID number"
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition dark:bg-gray-700 dark:text-white"
+                onKeyPress={handleKeyPress}
+                placeholder="Enter your NID number (e.g., 104-332-181-9)"
+                disabled={loading}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition dark:bg-gray-700 dark:text-white disabled:opacity-50"
               />
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Demo NID: 1234567890</p>
             </div>
 
             <button
               onClick={handleLogin}
               disabled={loading}
-              className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:bg-indigo-400 disabled:cursor-not-allowed"
+              className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:bg-indigo-400 disabled:cursor-not-allowed flex items-center justify-center"
             >
-              {loading ? 'Authenticating...' : 'Access My Records'}
+              {loading ? (
+                <>
+                  <Loader className="w-5 h-5 mr-2 animate-spin" />
+                  Authenticating...
+                </>
+              ) : (
+                'Access My Records'
+              )}
             </button>
           </div>
 
@@ -100,7 +149,6 @@ function Login({ onLogin, onBack  }) {
           </div>
         </div>
 
-        {/* Footer */}
         <p className="text-center text-sm text-gray-600 dark:text-gray-300 mt-6">
           Ministry of Health and Population, Nepal
         </p>

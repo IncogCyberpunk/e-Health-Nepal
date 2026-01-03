@@ -1,79 +1,89 @@
-import React, { useState } from 'react';
-import { Search, FileText, Calendar, Hospital, User, LogOut, Menu, X, Activity, Shield, Bell, Moon, Sun } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, FileText, Calendar, Hospital, User, LogOut, Menu, X, Activity, Shield, Bell, Moon, Sun, Loader, AlertCircle } from 'lucide-react';
 import { useDarkMode } from '../contexts/DarkModeContext';
+import { createClient } from '@supabase/supabase-js';
 
-const mockHealthRecords = [
-  {
-    id: 1,
-    record_type: 'lab_report',
-    title: 'Blood Test Report',
-    description: 'Complete Blood Count - All parameters normal',
-    issued_by: 'Grande International Hospital',
-    issued_date: '2024-12-15'
-  },
-  {
-    id: 2,
-    record_type: 'vaccination',
-    title: 'COVID-19 Vaccination',
-    description: 'Second dose of Covishield vaccine administered',
-    issued_by: 'Nepal Health Ministry',
-    issued_date: '2024-11-20'
-  },
-  {
-    id: 3,
-    record_type: 'prescription',
-    title: 'General Checkup Prescription',
-    description: 'Prescribed paracetamol for mild fever',
-    issued_by: 'Bir Hospital',
-    issued_date: '2024-12-01'
-  },
-  {
-    id: 4,
-    record_type: 'hospital_visit',
-    title: 'Annual Health Checkup',
-    description: 'Routine checkup - All vitals normal',
-    issued_by: 'Manipal Teaching Hospital',
-    issued_date: '2024-11-30'
-  }
-];
+// Initialize Supabase client
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
+);
 
 function Dashboard({ user, onLogout }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [healthRecords, setHealthRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
-  const filteredRecords = mockHealthRecords.filter(record => {
-    const matchesSearch = record.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      record.description.toLowerCase().includes(searchTerm.toLowerCase());
+  // Fetch health records on component mount
+  useEffect(() => {
+    fetchHealthRecords();
+  }, [user.nid_number]);
+
+  const fetchHealthRecords = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const { data, error: fetchError } = await supabase
+        .from('health_records')
+        .select('*')
+        .eq('nid_number', user.nid_number)
+        .order('issued_date', { ascending: false });
+
+      if (fetchError) {
+        setError('Error fetching health records: ' + fetchError.message);
+        console.error('Fetch error:', fetchError);
+      } else {
+        setHealthRecords(data || []);
+      }
+    } catch (err) {
+      setError('An unexpected error occurred: ' + err.message);
+      console.error('Error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredRecords = healthRecords.filter(record => {
+    const matchesSearch = 
+      record.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      record.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      record.diagnosis.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filterType === 'all' || record.record_type === filterType;
     return matchesSearch && matchesFilter;
   });
 
   const getRecordIcon = (type) => {
     switch (type) {
-      case 'lab_report': return <FileText className="w-5 h-5" />;
-      case 'vaccination': return <Activity className="w-5 h-5" />;
-      case 'prescription': return <FileText className="w-5 h-5" />;
-      case 'hospital_visit': return <Hospital className="w-5 h-5" />;
+      case 'Lab Report': return <FileText className="w-5 h-5" />;
+      case 'Vaccination': return <Activity className="w-5 h-5" />;
+      case 'Prescription': return <FileText className="w-5 h-5" />;
+      case 'IPD': return <Hospital className="w-5 h-5" />;
+      case 'OPD': return <Hospital className="w-5 h-5" />;
+      case 'Consultation': return <User className="w-5 h-5" />;
       default: return <FileText className="w-5 h-5" />;
     }
   };
 
   const getRecordColor = (type) => {
     switch (type) {
-      case 'lab_report': return 'bg-blue-100 text-blue-700';
-      case 'vaccination': return 'bg-green-100 text-green-700';
-      case 'prescription': return 'bg-purple-100 text-purple-700';
-      case 'hospital_visit': return 'bg-orange-100 text-orange-700';
-      default: return 'bg-gray-100 text-gray-700';
+      case 'Lab Report': return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
+      case 'Vaccination': return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
+      case 'Prescription': return 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
+      case 'IPD': return 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300';
+      case 'OPD': return 'bg-teal-100 text-teal-700 dark:bg-teal-900 dark:text-teal-300';
+      case 'Consultation': return 'bg-pink-100 text-pink-700 dark:bg-pink-900 dark:text-pink-300';
+      default: return 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300';
     }
   };
 
-  const formatRecordType = (type) => {
-    return type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-  };
+  // Get unique record types for filter dropdown
+  const recordTypes = ['all', ...new Set(healthRecords.map(r => r.record_type))];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -153,6 +163,10 @@ function Dashboard({ user, onLogout }) {
                     <span className="ml-2 font-medium text-gray-900 dark:text-white">{user.date_of_birth}</span>
                   </div>
                   <div>
+                    <span className="text-gray-500 dark:text-gray-400">Age:</span>
+                    <span className="ml-2 font-medium text-gray-900 dark:text-white">{user.age} years</span>
+                  </div>
+                  <div>
                     <span className="text-gray-500 dark:text-gray-400">Phone:</span>
                     <span className="ml-2 font-medium text-gray-900 dark:text-white">{user.phone}</span>
                   </div>
@@ -161,6 +175,17 @@ function Dashboard({ user, onLogout }) {
             </div>
           </div>
         </div>
+
+        {/* Error Alert */}
+        {error && (
+          <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 flex items-start">
+            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 mr-3 flex-shrink-0" />
+            <div>
+              <p className="text-red-800 dark:text-red-200 font-medium">Error</p>
+              <p className="text-red-700 dark:text-red-300 text-sm mt-1">{error}</p>
+            </div>
+          </div>
+        )}
 
         {/* Search and Filter */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6">
@@ -181,53 +206,65 @@ function Dashboard({ user, onLogout }) {
               className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white dark:bg-gray-700 dark:text-white"
             >
               <option value="all">All Records</option>
-              <option value="lab_report">Lab Reports</option>
-              <option value="vaccination">Vaccinations</option>
-              <option value="prescription">Prescriptions</option>
-              <option value="hospital_visit">Hospital Visits</option>
+              {recordTypes.filter(t => t !== 'all').map(type => (
+                <option key={type} value={type}>{type}</option>
+              ))}
             </select>
           </div>
         </div>
 
+        {/* Loading State */}
+        {loading && (
+          <div className="flex justify-center items-center py-12">
+            <Loader className="w-8 h-8 text-indigo-600 animate-spin" />
+            <span className="ml-3 text-gray-600 dark:text-gray-300">Loading health records...</span>
+          </div>
+        )}
+
         {/* Health Records Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredRecords.map(record => (
-            <div
-              key={record.id}
-              onClick={() => setSelectedRecord(record)}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition cursor-pointer"
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div className={`p-2 rounded-lg ${getRecordColor(record.record_type)}`}>
-                  {getRecordIcon(record.record_type)}
+        {!loading && filteredRecords.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredRecords.map(record => (
+              <div
+                key={record.record_id}
+                onClick={() => setSelectedRecord(record)}
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition cursor-pointer"
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div className={`p-2 rounded-lg ${getRecordColor(record.record_type)}`}>
+                    {getRecordIcon(record.record_type)}
+                  </div>
+                  <span className="text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+                    {record.record_type}
+                  </span>
                 </div>
-                <span className="text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                  {formatRecordType(record.record_type)}
-                </span>
+
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{record.title}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
+                  {record.description || record.diagnosis}
+                </p>
+
+                <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <div className="flex items-center space-x-1">
+                    <Calendar className="w-4 h-4" />
+                    <span>{record.issued_date}</span>
+                  </div>
+                </div>
               </div>
+            ))}
+          </div>
+        )}
 
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{record.title}</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">{record.description}</p>
-
-              <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 pt-4 border-t border-gray-100 dark:border-gray-700">
-                <div className="flex items-center space-x-1">
-                  <Hospital className="w-4 h-4" />
-                  <span className="truncate">{record.issued_by}</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Calendar className="w-4 h-4" />
-                  <span>{record.issued_date}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {filteredRecords.length === 0 && (
+        {/* Empty State */}
+        {!loading && filteredRecords.length === 0 && (
           <div className="text-center py-12">
             <FileText className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No records found</h3>
-            <p className="text-gray-600 dark:text-gray-300">Try adjusting your search or filter criteria</p>
+            <p className="text-gray-600 dark:text-gray-300">
+              {healthRecords.length === 0 
+                ? 'You don\'t have any health records yet' 
+                : 'Try adjusting your search or filter criteria'}
+            </p>
           </div>
         )}
       </div>
@@ -235,7 +272,7 @@ function Dashboard({ user, onLogout }) {
       {/* Record Detail Modal */}
       {selectedRecord && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" onClick={() => setSelectedRecord(null)}>
-          <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-start space-x-3">
                 <div className={`p-3 rounded-xl ${getRecordColor(selectedRecord.record_type)}`}>
@@ -243,7 +280,7 @@ function Dashboard({ user, onLogout }) {
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{selectedRecord.title}</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{formatRecordType(selectedRecord.record_type)}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{selectedRecord.record_type}</p>
                 </div>
               </div>
               <button
@@ -255,34 +292,39 @@ function Dashboard({ user, onLogout }) {
             </div>
 
             <div className="space-y-4">
+              {selectedRecord.description && (
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Description</h4>
+                  <p className="text-gray-900 dark:text-white">{selectedRecord.description}</p>
+                </div>
+              )}
+
               <div>
-                <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Description</h4>
-                <p className="text-gray-900 dark:text-white">{selectedRecord.description}</p>
+                <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Diagnosis</h4>
+                <p className="text-gray-900 dark:text-white">{selectedRecord.diagnosis}</p>
+              </div>
+
+              <div>
+                <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Prescription/Treatment</h4>
+                <p className="text-gray-900 dark:text-white">{selectedRecord.prescription}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Issued By</h4>
-                  <p className="text-gray-900 dark:text-white">{selectedRecord.issued_by}</p>
-                </div>
-                <div>
                   <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Issue Date</h4>
                   <p className="text-gray-900 dark:text-white">{selectedRecord.issued_date}</p>
                 </div>
-              </div>
-
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mt-6">
-                <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
-                  Document preview would appear here in production version
-                </p>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Institute ID</h4>
+                  <p className="text-gray-900 dark:text-white">{selectedRecord.institute_id}</p>
+                </div>
               </div>
 
               <div className="flex justify-end space-x-3 pt-4">
-                <button className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                  Download PDF
-                </button>
-                <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                  Share Record
+                <button 
+                  onClick={() => setSelectedRecord(null)}
+                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                  Close
                 </button>
               </div>
             </div>
