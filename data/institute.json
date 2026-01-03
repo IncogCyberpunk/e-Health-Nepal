@@ -1,0 +1,392 @@
+[
+    {
+        "name": "Bir Hospital",
+        "location": "Ratnapark",
+        "province": "Bagmati",
+        "description": "Oldest hospital of Nepal. Established by Bir Shumsher Jang Bahadur Rana in 1947 BS (1899 AD)."
+    },
+    {
+        "name": "Patan Hospital",
+        "location": "Lagankhel",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "Nardevi Ayurvedic Hospital",
+        "location": "Naradevi",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "Pashupati Homeopathic Hospital",
+        "location": "Hariharbhawan",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "Unani Aushodhalaya",
+        "location": "Hariharbhawan",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "Civil Hospital",
+        "location": "Baneshwor",
+        "province": "Bagmati",
+        "description": "An autonomous government institution under the Ministry of General Administration (MoGA), Nepal"
+    },
+    {
+        "name": "Shree Birendra Hospital",
+        "location": "Chhauni",
+        "province": "Bagmati",
+        "description": "Military Hospital"
+    },
+    {
+        "name": "Tri Chandra military Hospital",
+        "location": "Bhadrakali",
+        "province": "Bagmati",
+        "description": "Military Hospital"
+    },
+    {
+        "name": "Nepal Police Hospital",
+        "location": "Maharajgunj",
+        "province": "Bagmati",
+        "description": "Nepal Police Hospital, previously known as the Birendra Police Hospital, is the first hospital of Nepal Police organization"
+    },
+    {
+        "name": "Nepal APF Hospital",
+        "location": "Chandragiri",
+        "province": "Bagmati",
+        "description": "Operated by APF"
+    },
+    {
+        "name": "Patan Mental Hospital",
+        "location": "Lalitpur",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "Kanti Children's Hospital",
+        "location": "Maharajgunj",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "National Cardiac Center",
+        "location": "Basundhara, Kathmandu",
+        "province": "Bagmati",
+        "description": "Established to prevent, detect and treat risk factors of heart disease in Nepal."
+    },
+    {
+        "name": "Nepal Eye Hospital",
+        "location": "Tripureshwor",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "Teku Infectious Disease Hospital",
+        "location": "Teku",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "Paropakar Maternity Hospital",
+        "location": "Thapathali",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "Ganga Lal Hospital",
+        "location": "Bansbari, Kathmandu",
+        "province": "Bagmati",
+        "description": "Specializes in cardiac care."
+    },
+    {
+        "name": "Bhaktapur Cancer Hospital",
+        "location": "Bhaktapur",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "Til Ganga Eye Hospital",
+        "location": "Kathmandu",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "Manmohan Cardiothoracic and vascular Hospital",
+        "location": "Maharajgunj",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "Bharatapur Cancer Hospital",
+        "location": "Bharatpur",
+        "province": "Bagmati",
+        "description": "National cancer center for diagnosis, treatment, prevention and research"
+    },
+    {
+        "name": "Sushil Koirala Prakhar Cancer Hospital",
+        "location": "Khajura",
+        "province": "Lumbini",
+        "description": ""
+    },
+    {
+        "name": "Human Organ Transplant Centre",
+        "location": "Dudhpati-17, Bhaktapur",
+        "province": "Bagmati",
+        "description": "A 100 bedded government Tertiary Organ Transplant hospital"
+    },
+    {
+        "name": "National Tuberculosis Control Center",
+        "location": "Thimi, Bhaktapur",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "G.P. Koirala National Center For Respiratory Diseases",
+        "location": "Shuklagandaki",
+        "province": "Gandaki",
+        "description": "first specialized respiratory disease in Nepal"
+    },
+    {
+        "name": "Mechi Eye Hospital",
+        "location": "Birtamod",
+        "province": "Koshi",
+        "description": ""
+    },
+    {
+        "name": "Golchha Eye Hospital",
+        "location": "Biratnagar",
+        "province": "Koshi",
+        "description": ""
+    },
+    {
+        "name": "Sagarmatha Choudhary Eye Hospital",
+        "location": "Lahan, Siraha",
+        "province": "Madhesh",
+        "description": "Established in 1983 AD at Lahan, eastern part of Nepal by Dr Albrecht Hennig from Germany, Nepal Netra Jyoti Sangh (NNJS) and local Choudhary Family."
+    },
+    {
+        "name": "Kedia Eye Hospital",
+        "location": "Lipani, Birgunj",
+        "province": "Madhesh",
+        "description": ""
+    },
+    {
+        "name": "Himalayan Eye Hospital",
+        "location": "Pokhara",
+        "province": "Gandaki",
+        "description": ""
+    },
+    {
+        "name": "Rapti Eye Hospital",
+        "location": "Tulsipur, Dang",
+        "province": "Lumbini",
+        "description": "50 bedded government hospital, established in 1986 with the support of NCA, Norway and inaugurated by the then king of Nepal, Birendra Bir Bikram Shah Dev."
+    },
+    {
+        "name": "Fatte Eye Hospital",
+        "location": "Nepalgunj",
+        "province": "Lumbini",
+        "description": ""
+    },
+    {
+        "name": "Geta Eye Hospital",
+        "location": "Attariya",
+        "province": "Sudurpashchim",
+        "description": ""
+    },
+    {
+        "name": "TU Teaching Hospital",
+        "location": "Maharajganj, Kathmandu",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "National Academy of Medical Sciences",
+        "location": "Kathmandu",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "Patan Academy of Health Sciences",
+        "location": "Patan",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "Karnali Academy of Health Sciences",
+        "location": "Jumla",
+        "province": "Karnali",
+        "description": "Started Doctor of Medicine aka MD course in 2021 AD."
+    },
+    {
+        "name": "B.P. Koirala Institute of Health Sciences",
+        "location": "Dharan",
+        "province": "Koshi",
+        "description": ""
+    },
+    {
+        "name": "Madan Bhandari Academy of Health Sciences",
+        "location": "Hetauda",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "Rapti Academy of Health Sciences",
+        "location": "Ghorahi",
+        "province": "Lumbini",
+        "description": ""
+    },
+    {
+        "name": "Nepal Army Institute of Health Science",
+        "location": "Bhandarkhal",
+        "province": "Bagmati",
+        "description": "Medical Institution run by Nepal Army"
+    },
+    {
+        "name": "Pokhara Academy of Health Sciences",
+        "location": "Pokhara",
+        "province": "Gandaki",
+        "description": ""
+    },
+    {
+        "name": "Madhesh Institute of Health Sciences",
+        "location": "Janakpur",
+        "province": "Madhesh",
+        "description": ""
+    },
+    {
+        "name": "Ayurveda Teaching Hospital",
+        "location": "Kirtipur",
+        "province": "Bagmati",
+        "description": ""
+    },
+    {
+        "name": "Mechi Provincial Hospital",
+        "location": "Bhadrapur Municipality-08",
+        "province": "Koshi",
+        "description": ""
+    },
+    {
+        "name": "Koshi Provincial Hospital",
+        "location": "Biratnagar-10, Morang",
+        "province": "Koshi",
+        "description": "It is regarded as one of the oldest hospitals of Nepal."
+    },
+    {
+        "name": "Sagarmatha Provincial Hospital",
+        "location": "Rajbiraj",
+        "province": "Madhesh",
+        "description": ""
+    },
+    {
+        "name": "Gaur Provincial Hospital",
+        "location": "Gaur",
+        "province": "Madhesh",
+        "description": ""
+    },
+    {
+        "name": "Jaleshwor Hospital",
+        "location": "Jaleshwor, Mohattari",
+        "province": "Madhesh",
+        "description": ""
+    },
+    {
+        "name": "Janakpur Provincial Hospital",
+        "location": "Janakpur",
+        "province": "Madhesh",
+        "description": ""
+    },
+    {
+        "name": "Kalaiya Provincial Hospital",
+        "location": "Kalaiya",
+        "province": "Madhesh",
+        "description": ""
+    },
+    {
+        "name": "Malangwa Provincial Hospital",
+        "location": "Malangwa",
+        "province": "Madhesh",
+        "description": ""
+    },
+    {
+        "name": "Narayani Provincial Hospital",
+        "location": "Birgunj",
+        "province": "Madhesh",
+        "description": ""
+    },
+    {
+        "name": "Siraha Provincial Hospital",
+        "location": "Lahan",
+        "province": "Madhesh",
+        "description": ""
+    },
+    {
+        "name": "Hetauda Provincial Hospital",
+        "location": "Hetauda",
+        "province": "Bagmati",
+        "description": "A 170 bedded"
+    },
+    {
+        "name": "Pokhara Provincial Hospital",
+        "location": "Pokhara",
+        "province": "Gandaki",
+        "description": ""
+    },
+    {
+        "name": "Dhaulagiri Provincial Hospital",
+        "location": "Baglung",
+        "province": "Gandaki",
+        "description": ""
+    },
+    {
+        "name": "Madhyabindu Provincial Hospital",
+        "location": "Nawalpur",
+        "province": "Gandaki",
+        "description": ""
+    },
+    {
+        "name": "Lumbini Provincial Hospital",
+        "location": "Butwal",
+        "province": "Lumbini",
+        "description": ""
+    },
+    {
+        "name": "Rapti Provincial Hospital",
+        "location": "Tulsipur, Dang",
+        "province": "Lumbini",
+        "description": "Established as a Health post in 2033 BS (1976-1977)."
+    },
+    {
+        "name": "Bheri Provincial Hospital",
+        "location": "Nepalgunj",
+        "province": "Lumbini",
+        "description": "Established in 1947 BS (1890-1891)"
+    },
+    {
+        "name": "Karnali Provincial Hospital",
+        "location": "Kalagaun, Surkhet",
+        "province": "Karnali",
+        "description": ""
+    },
+    {
+        "name": "Seti Provincial Hospital",
+        "location": "Dhangadi, Kailali,",
+        "province": "Sudurpashchim",
+        "description": ""
+    },
+    {
+        "name": "Mahakali Provincial Hospital",
+        "location": "Mahendranagar, Kanchanpur",
+        "province": "Sudurpashchim",
+        "description": ""
+    },
+    {
+        "name": "Dang Regional Ayurvedic Hospital",
+        "location": "Dang",
+        "province": "Lumbini",
+        "description": ""
+    }
+]

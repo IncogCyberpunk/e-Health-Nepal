@@ -1,0 +1,95 @@
+import pandas as pd
+
+district_to_province = {
+    "Taplejung": "Koshi",
+    "Panchthar": "Koshi",
+    "Ilam": "Koshi",
+    "Jhapa": "Koshi",
+    "Tehrathum": "Koshi",
+    "Sankhuwasabha": "Koshi",
+    "Dhankuta": "Koshi",
+    "Morang": "Koshi",
+    "Sunsari": "Koshi",
+    "Bhojpur": "Koshi",
+    "Udayapur": "Koshi",
+    "Khotang": "Koshi",
+    "Solukhumbu": "Koshi",
+    "Okhaldhunga": "Koshi",
+    "Saptari": "Madhesh",
+    "Siraha": "Madhesh",
+    "Dhanusha": "Madhesh",
+    "Mahottari": "Madhesh",
+    "Sarlahi": "Madhesh",
+    "Rautahat": "Madhesh",
+    "Bara": "Madhesh",
+    "Parsa": "Madhesh",
+    "Dolakha": "Bagmati",
+    "Ramechhap": "Bagmati",
+    "Sindhuli": "Bagmati",
+    "Sindhupalchowk": "Bagmati",
+    "Kavrepalanchok": "Bagmati",
+    "Kathmandu": "Bagmati",
+    "Lalitpur": "Bagmati",
+    "Bhaktapur": "Bagmati",
+    "Rasuwa": "Bagmati",
+    "Nuwakot": "Bagmati",
+    "Makawanpur": "Bagmati",
+    "Dhading": "Bagmati",
+    "Chitwan": "Bagmati",
+    "Gorkha": "Gandaki",
+    "Lamjung": "Gandaki",
+    "Tanahun": "Gandaki",
+    "Nawalpur": "Gandaki",
+    "Manang": "Gandaki",
+    "Mustang": "Gandaki",
+    "Kaski": "Gandaki",
+    "Parbat": "Gandaki",
+    "Syangja": "Gandaki",
+    "Myagdi": "Gandaki",
+    "Baglung": "Gandaki",
+    "Parasi": "Lumbini",
+    "Palpa": "Lumbini",
+    "Gulmi": "Lumbini",
+    "Arghakhanchi": "Lumbini",
+    "Rupandehi": "Lumbini",
+    "Kapilvastu": "Lumbini",
+    "Pyuthan": "Lumbini",
+    "Eastern Rukum": "Lumbini",
+    "Rolpa": "Lumbini",
+    "Dang": "Lumbini",
+    "Banke": "Lumbini",
+    "Bardiya": "Lumbini",
+    "Dolpa": "Karnali",
+    "Mugu": "Karnali",
+    "Humla": "Karnali",
+    "Jumla": "Karnali",
+    "Western Rukum": "Karnali",
+    "Jajarkot": "Karnali",
+    "Kalikot": "Karnali",
+    "Dailekh": "Karnali",
+    "Surkhet": "Karnali",
+    "Salyan": "Karnali",
+    "Bajura": "Sudurpashchim",
+    "Achham": "Sudurpashchim",
+    "Bajhang": "Sudurpashchim",
+    "Darchula": "Sudurpashchim",
+    "Baitadi": "Sudurpashchim",
+    "Dadeldhura": "Sudurpashchim",
+    "Doti": "Sudurpashchim",
+    "Kanchanpur": "Sudurpashchim",
+    "Kailali": "Sudurpashchim",
+}
+
+df = pd.read_csv("data/location.csv")
+
+# Add Province column
+df["Province"] = df["District"].map(district_to_province)
+
+# Optional: check for districts not found
+missing = df[df["Province"].isna()]["District"].unique()
+print("Missing districts:", missing)
+
+# Save updated CSV
+df.to_csv("data/new_location.csv", index=False)
+
+print(df.head())
