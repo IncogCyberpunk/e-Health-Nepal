@@ -17,7 +17,7 @@ function Dashboard({ user, onLogout }) {
   const [healthRecords, setHealthRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  // const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   // Fetch health records on component mount
   useEffect(() => {
@@ -50,7 +50,7 @@ function Dashboard({ user, onLogout }) {
   };
 
   const filteredRecords = healthRecords.filter(record => {
-    const matchesSearch = 
+    const matchesSearch =
       record.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       record.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       record.diagnosis.toLowerCase().includes(searchTerm.toLowerCase());
@@ -102,12 +102,12 @@ function Dashboard({ user, onLogout }) {
             </div>
 
             <div className="flex items-center space-x-4">
-              <button
-                onClick={toggleDarkMode}
-                className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition"
-              >
-                {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
+              {/* <button */}
+              {/*   onClick={toggleDarkMode} */}
+              {/*   className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition" */}
+              {/* > */}
+              {/*   {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />} */}
+              {/* </button> */}
               <button className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition">
                 <Bell className="w-5 h-5" />
               </button>
@@ -261,8 +261,8 @@ function Dashboard({ user, onLogout }) {
             <FileText className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No records found</h3>
             <p className="text-gray-600 dark:text-gray-300">
-              {healthRecords.length === 0 
-                ? 'You don\'t have any health records yet' 
+              {healthRecords.length === 0
+                ? 'You don\'t have any health records yet'
                 : 'Try adjusting your search or filter criteria'}
             </p>
           </div>
@@ -321,7 +321,7 @@ function Dashboard({ user, onLogout }) {
               </div>
 
               <div className="flex justify-end space-x-3 pt-4">
-                <button 
+                <button
                   onClick={() => setSelectedRecord(null)}
                   className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                   Close

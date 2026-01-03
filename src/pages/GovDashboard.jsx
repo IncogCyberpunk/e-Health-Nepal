@@ -5,7 +5,6 @@ import {
   Calendar, User, Droplet, Phone, Mail, MapPinned, Search,
   Filter, AlertTriangle, CheckCircle, Clock, Package
 } from 'lucide-react';
-import { useDarkMode } from '../contexts/DarkModeContext';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 
 
@@ -13,7 +12,8 @@ import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Cart
 function GovDashboard({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
   const [citizens, setCitizens] = useState([]);
   const [healthInstitutes, setHealthInstitutes] = useState([]);
@@ -24,6 +24,14 @@ function GovDashboard({ user, onLogout }) {
   const [filterType, setFilterType] = useState('all');
   const [filterOwnership, setFilterOwnership] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -602,12 +610,12 @@ function GovDashboard({ user, onLogout }) {
                   <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{type.value}</p>
                 </div>
                 <div className={`p-3 rounded-lg ${idx === 0 ? 'bg-indigo-100 dark:bg-indigo-900/30' :
-                    idx === 1 ? 'bg-purple-100 dark:bg-purple-900/30' :
-                      'bg-pink-100 dark:bg-pink-900/30'
+                  idx === 1 ? 'bg-purple-100 dark:bg-purple-900/30' :
+                    'bg-pink-100 dark:bg-pink-900/30'
                   }`}>
                   <Hospital className={`w-8 h-8 ${idx === 0 ? 'text-indigo-600 dark:text-indigo-400' :
-                      idx === 1 ? 'text-purple-600 dark:text-purple-400' :
-                        'text-pink-600 dark:text-pink-400'
+                    idx === 1 ? 'text-purple-600 dark:text-purple-400' :
+                      'text-pink-600 dark:text-pink-400'
                     }`} />
                 </div>
               </div>
@@ -811,8 +819,8 @@ function GovDashboard({ user, onLogout }) {
                   <div className="flex items-start justify-between mb-2">
                     <h4 className="font-semibold text-gray-900 dark:text-white text-sm">{institute.name}</h4>
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${institute.is_active
-                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                        : 'bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-gray-300'
+                      ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                      : 'bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-gray-300'
                       }`}>
                       {institute.is_active ? 'Active' : 'Inactive'}
                     </span>
@@ -1062,8 +1070,8 @@ function GovDashboard({ user, onLogout }) {
               <div key={alert.diagnosis} className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-orange-200 dark:border-orange-700">
                 <div className="flex items-center justify-between mb-2">
                   <span className={`text-xs font-bold px-2 py-1 rounded ${idx === 0 ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
-                      idx === 1 ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400' :
-                        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                    idx === 1 ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400' :
+                      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
                     }`}>
                     #{idx + 1}
                   </span>
