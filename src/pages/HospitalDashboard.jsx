@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   Hospital, LogOut, Search, User, FileText, Activity,
   AlertCircle, Calendar, Stethoscope, Plus, X, Save,
-  Clock, Moon, Sun, Menu, CheckCircle, Download, Loader
+  Clock, Moon, Sun, Menu, CheckCircle, Download, Loader, UserPlus
 } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 
@@ -20,9 +20,11 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [patientNotFound, setPatientNotFound] = useState(false);
 
   // New record form state
   const [newRecord, setNewRecord] = useState({
+    nid_number: '',
     record_type: 'Prescription',
     title: '',
     description: '',
@@ -40,6 +42,7 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
     setError('');
     setSelectedPatient(null);
     setPatientRecords([]);
+    setPatientNotFound(false);
 
     try {
       // Fetch citizen data
@@ -51,7 +54,8 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
 
       if (citizenError) {
         if (citizenError.code === 'PGRST116') {
-          setError('Patient not found. Please check the NID number.');
+          setPatientNotFound(true);
+          setError('Patient not found. Please verify the NID number is correct.');
         } else {
           setError('Error fetching patient data: ' + citizenError.message);
         }
@@ -68,7 +72,6 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
 
       if (recordsError) {
         console.error('Error fetching records:', recordsError);
-        // Continue even if records fetch fails
       }
 
       // Calculate age from date of birth
@@ -92,6 +95,13 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
   };
 
   const handleAddRecord = async () => {
+    const nid = selectedPatient ? selectedPatient.nid_number : newRecord.nid_number;
+    
+    if (!nid) {
+      setError('NID number is required');
+      return;
+    }
+
     if (!newRecord.title || !newRecord.diagnosis || !newRecord.prescription) {
       setError('Please fill in all required fields (Title, Diagnosis, Prescription)');
       return;
@@ -102,11 +112,11 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
 
     try {
       const recordData = {
-        nid_number: selectedPatient.nid_number,
-        institute_id: user.institute_id || null,
+        nid_number: nid,
+        institute_id: user.institute_id,
         record_type: newRecord.record_type,
         title: newRecord.title,
-        description: newRecord.description,
+        description: newRecord.description || null,
         diagnosis: newRecord.diagnosis,
         prescription: newRecord.prescription,
         issued_date: new Date().toISOString().split('T')[0]
@@ -123,16 +133,20 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
         return;
       }
 
-      // Refresh records list
-      const { data: updatedRecords } = await supabase
-        .from('health_records')
-        .select('*')
-        .eq('nid_number', selectedPatient.nid_number)
-        .order('issued_date', { ascending: false });
+      // If we had a selected patient, refresh their records
+      if (selectedPatient) {
+        const { data: updatedRecords } = await supabase
+          .from('health_records')
+          .select('*')
+          .eq('nid_number', selectedPatient.nid_number)
+          .order('issued_date', { ascending: false });
 
-      setPatientRecords(updatedRecords || []);
+        setPatientRecords(updatedRecords || []);
+      }
+
       setShowAddRecord(false);
       setNewRecord({
+        nid_number: '',
         record_type: 'Prescription',
         title: '',
         description: '',
@@ -140,6 +154,11 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
         prescription: ''
       });
       alert('Record added successfully!');
+
+      // If patient wasn't in system, suggest searching again
+      if (!selectedPatient) {
+        alert('Record added for NID: ' + nid + '. The patient may now appear in the system.');
+      }
     } catch (err) {
       setError('An unexpected error occurred: ' + err.message);
       console.error('Add record error:', err);
@@ -172,7 +191,7 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900 dark:text-white">Hospital Portal</h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">{user.hospital_name || 'Healthcare Provider'}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">{user.name || 'Healthcare Provider'}</p>
               </div>
             </div>
 
@@ -185,7 +204,7 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
               </button>
               <div className="hidden sm:flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
                 <Stethoscope className="w-4 h-4 text-gray-600 dark:text-gray-300" />
-                <span className="text-sm text-gray-700 dark:text-gray-300">{user.staff_name || user.name || 'Staff'}</span>
+                <span className="text-sm text-gray-700 dark:text-gray-300">{user.name || 'Staff'}</span>
               </div>
               <button
                 onClick={onLogout}
@@ -196,7 +215,7 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
               </button>
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="sm:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                className="sm:hidden p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg"
               >
                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -220,7 +239,7 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Error Alert */}
-        {error && (
+        {error && !patientNotFound && (
           <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 flex items-start">
             <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 mr-3 flex-shrink-0" />
             <div>
@@ -236,6 +255,27 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
           </div>
         )}
 
+        {/* Patient Not Found Alert */}
+        {patientNotFound && (
+          <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+            <div className="flex items-start">
+              <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 mr-3 flex-shrink-0" />
+              <div className="flex-1">
+                <p className="text-red-800 dark:text-red-200 font-medium">Patient Not Found</p>
+                <p className="text-red-700 dark:text-red-300 text-sm mt-1">
+                  NID {nidSearch} is not registered in the system. Please verify the NID number and try again.
+                </p>
+              </div>
+              <button
+                onClick={() => setPatientNotFound(false)}
+                className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Patient Search */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
@@ -248,7 +288,7 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
                 type="text"
                 value={nidSearch}
                 onChange={(e) => setNidSearch(e.target.value)}
-                placeholder="Enter patient NID number (e.g., 104-332-181-9)"
+                placeholder="Enter patient NID number (e.g., 513-542-784-9)"
                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none dark:bg-gray-700 dark:text-white"
                 onKeyPress={(e) => e.key === 'Enter' && !loading && handleSearchPatient()}
                 disabled={loading}
@@ -397,7 +437,7 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
         )}
 
         {/* Empty State */}
-        {!selectedPatient && !loading && (
+        {!selectedPatient && !loading && !patientNotFound && (
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
             <User className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No Patient Selected</h3>
@@ -413,7 +453,9 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
             <div className="flex items-start justify-between mb-6">
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Add New Record</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">For: {selectedPatient?.full_name}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  {selectedPatient ? `For: ${selectedPatient.full_name}` : `For NID: ${newRecord.nid_number}`}
+                </p>
               </div>
               <button
                 onClick={() => setShowAddRecord(false)}
