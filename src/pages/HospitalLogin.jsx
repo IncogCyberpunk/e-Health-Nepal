@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Hospital, Moon, Sun, Lock, AlertCircle } from 'lucide-react';
-import { useDarkMode } from '../contexts/DarkModeContext';
+// import { useDarkMode } from '../contexts/DarkModeContext';
 
 // Hardcoded institute for MVP
 const HARDCODED_INSTITUTE = {
@@ -19,7 +19,7 @@ function HospitalLogin({ onLogin, onBack }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  // const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   const handleLogin = () => {
     setError('');
@@ -53,12 +53,12 @@ function HospitalLogin({ onLogin, onBack }) {
       )}
 
       <div className="absolute top-4 right-4">
-        <button
-          onClick={toggleDarkMode}
-          className="p-3 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-lg shadow-lg hover:shadow-xl transition"
-        >
-          {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-        </button>
+        {/* <button */}
+        {/*   onClick={toggleDarkMode} */}
+        {/*   className="p-3 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-lg shadow-lg hover:shadow-xl transition" */}
+        {/* > */}
+        {/*   {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />} */}
+        {/* </button> */}
       </div>
 
       <div className="max-w-md w-full">
@@ -123,20 +123,22 @@ function HospitalLogin({ onLogin, onBack }) {
           </div>
 
           <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-            <p className="text-xs text-gray-600 dark:text-gray-400 text-center font-medium mb-2">
-              Demo Credentials (MVP)
+            <p className="text-s text-gray-600 dark:text-gray-400 text-center font-bold mb-2">
+              Demo Credentials
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-500 text-center">
-              License: <span className="font-mono text-teal-600 dark:text-teal-400">MED-16822608</span>
-            </p>
-            <p className="text-xs text-gray-500 dark:text-gray-500 text-center">
-              Password: <span className="font-mono text-teal-600 dark:text-teal-400">password</span>
-            </p>
+            <div>
+              <p className="text-xs text-gray-500 dark:text-gray-500 text-center">
+                License: <span className="font-mono text-teal-600 dark:text-teal-400">MED-16822608</span>
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-500 text-center">
+                Password: <span className="font-mono text-teal-600 dark:text-teal-400">password</span>
+              </p>
+            </div>
           </div>
 
           <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
             <div className="flex items-start space-x-2 text-sm text-gray-600 dark:text-gray-300">
-              <Hospital className="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" />
+              <Hospital className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
               <p>Secure access for authorized healthcare professionals only.</p>
             </div>
           </div>

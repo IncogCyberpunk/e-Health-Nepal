@@ -77,9 +77,9 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
       // Calculate age from date of birth
       const dob = new Date(citizenData.date_of_birth);
       const today = new Date();
-      const age = today.getFullYear() - dob.getFullYear() - 
-        (today.getMonth() < dob.getMonth() || 
-         (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate()) ? 1 : 0);
+      const age = today.getFullYear() - dob.getFullYear() -
+        (today.getMonth() < dob.getMonth() ||
+          (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate()) ? 1 : 0);
 
       setSelectedPatient({
         ...citizenData,
@@ -96,7 +96,7 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
 
   const handleAddRecord = async () => {
     const nid = selectedPatient ? selectedPatient.nid_number : newRecord.nid_number;
-    
+
     if (!nid) {
       setError('NID number is required');
       return;
@@ -196,12 +196,12 @@ function HospitalDashboard({ user, onLogout, isDarkMode, toggleDarkMode }) {
             </div>
 
             <div className="flex items-center space-x-4">
-              <button
-                onClick={toggleDarkMode}
-                className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition"
-              >
-                {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
+              {/* <button */}
+              {/*   onClick={toggleDarkMode} */}
+              {/*   className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition" */}
+              {/* > */}
+              {/*   {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />} */}
+              {/* </button> */}
               <div className="hidden sm:flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
                 <Stethoscope className="w-4 h-4 text-gray-600 dark:text-gray-300" />
                 <span className="text-sm text-gray-700 dark:text-gray-300">{user.name || 'Staff'}</span>
