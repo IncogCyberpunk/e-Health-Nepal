@@ -1,537 +1,1433 @@
-import React, { useState } from 'react';
-import { 
-  Shield, LogOut, Menu, X, BarChart3, Users, Hospital, 
-  FileText, TrendingUp, MapPin, Activity, Search, Calendar,
-  AlertCircle, CheckCircle, Download, Filter, ChevronDown,
-  Eye, Clock, ArrowUp, ArrowDown, Moon, Sun
+import React, { useState, useEffect } from 'react';
+import {
+  Shield, LogOut, Menu, X, BarChart3, Users, Hospital,
+  FileText, Moon, Sun, Database, TrendingUp, MapPin, Activity,
+  Calendar, User, Droplet, Phone, Mail, MapPinned, Search,
+  Filter, AlertTriangle, CheckCircle, Clock, Package
 } from 'lucide-react';
+import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 
-// Mock data for analytics
-const dashboardStats = {
-  totalCitizens: 125840,
-  totalRecords: 456789,
-  activeHospitals: 234,
-  monthlyVisits: 45231,
-  citizenGrowth: 2.3,
-  recordGrowth: 8.7,
-  hospitalGrowth: 1.2,
-  visitGrowth: 5.4
-};
 
-const diseaseData = [
-  { name: 'Hypertension', cases: 8234, trend: 'up', change: 12 },
-  { name: 'Diabetes', cases: 6789, trend: 'up', change: 8 },
-  { name: 'Respiratory Infections', cases: 5432, trend: 'down', change: -5 },
-  { name: 'COVID-19', cases: 1234, trend: 'down', change: -23 },
-  { name: 'Dengue', cases: 890, trend: 'up', change: 45 }
-];
-
-const vaccinationData = [
-  { vaccine: 'COVID-19', coverage: 87, target: 90 },
-  { vaccine: 'Polio', coverage: 95, target: 95 },
-  { vaccine: 'Measles', coverage: 89, target: 92 },
-  { vaccine: 'Hepatitis B', coverage: 82, target: 85 }
-];
-
-const mockCitizens = [
-  {
-    nid: '1234567890',
-    name: 'Ram Bahadur Thapa',
-    age: 39,
-    district: 'Kathmandu',
-    lastVisit: '2024-12-15',
-    totalVisits: 12,
-    conditions: ['Hypertension'],
-    entitlements: ['Senior Citizen Subsidy']
-  },
-  {
-    nid: '9876543210',
-    name: 'Sita Kumari Shrestha',
-    age: 45,
-    district: 'Lalitpur',
-    lastVisit: '2024-12-20',
-    totalVisits: 8,
-    conditions: ['Diabetes'],
-    entitlements: ['Free Medication Program']
-  },
-  {
-    nid: '5555666677',
-    name: 'Krishna Prasad Pokhrel',
-    age: 62,
-    district: 'Bhaktapur',
-    lastVisit: '2024-12-10',
-    totalVisits: 25,
-    conditions: ['Diabetes', 'Hypertension'],
-    entitlements: ['Senior Citizen Subsidy', 'Free Medication Program']
-  }
-];
-
-const mockHospitals = [
-  {
-    id: 1,
-    name: 'Grande International Hospital',
-    district: 'Kathmandu',
-    type: 'Private',
-    status: 'Active',
-    recordsThisMonth: 2345,
-    lastActivity: '2024-12-28',
-    compliance: 98
-  },
-  {
-    id: 2,
-    name: 'Bir Hospital',
-    district: 'Kathmandu',
-    type: 'Public',
-    status: 'Active',
-    recordsThisMonth: 5678,
-    lastActivity: '2024-12-28',
-    compliance: 95
-  },
-  {
-    id: 3,
-    name: 'Manipal Teaching Hospital',
-    district: 'Kaski',
-    type: 'Private',
-    status: 'Active',
-    recordsThisMonth: 1890,
-    lastActivity: '2024-12-27',
-    compliance: 92
-  }
-];
-
-const recentActivities = [
-  {
-    id: 1,
-    type: 'record_added',
-    hospital: 'Grande International Hospital',
-    details: 'Added 45 new health records',
-    timestamp: '2 hours ago'
-  },
-  {
-    id: 2,
-    type: 'hospital_registered',
-    hospital: 'New Life Hospital',
-    details: 'New hospital registered in Pokhara',
-    timestamp: '5 hours ago'
-  },
-  {
-    id: 3,
-    type: 'alert',
-    hospital: 'Multiple Districts',
-    details: 'Dengue cases increased by 45% this week',
-    timestamp: '1 day ago'
-  }
-];
 
 function GovDashboard({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [districtFilter, setDistrictFilter] = useState('all');
-  const [selectedCitizen, setSelectedCitizen] = useState(null);
+  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
-  const filteredCitizens = mockCitizens.filter(citizen => {
-    const matchesSearch = citizen.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      citizen.nid.includes(searchTerm);
-    const matchesDistrict = districtFilter === 'all' || citizen.district === districtFilter;
-    return matchesSearch && matchesDistrict;
-  });
+  const [citizens, setCitizens] = useState([]);
+  const [healthInstitutes, setHealthInstitutes] = useState([]);
+  const [healthRecords, setHealthRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const StatCard = ({ title, value, change, icon: Icon, trend }) => (
-    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">{title}</p>
-          <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{value.toLocaleString()}</h3>
-          {change && (
-            <div className={`flex items-center mt-2 text-sm ${trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
-              {trend === 'up' ? <ArrowUp className="w-4 h-4 mr-1" /> : <ArrowDown className="w-4 h-4 mr-1" />}
-              <span>{Math.abs(change)}% from last month</span>
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterType, setFilterType] = useState('all');
+  const [filterOwnership, setFilterOwnership] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [citizensRes, institutesRes, recordsRes] = await Promise.all([
+          fetch('/data/citizens.json'),
+          fetch('/data/health_institutes.json'),
+          fetch('/data/health_records.json')
+        ]);
+
+        const citizensData = await citizensRes.json();
+        const institutesData = await institutesRes.json();
+        const recordsData = await recordsRes.json();
+
+        setCitizens(citizensData);
+        setHealthInstitutes(institutesData);
+        setHealthRecords(recordsData);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error loading data:', error);
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#06b6d4', '#f97316', '#84cc16'];
+
+  const DashboardView = () => {
+    // KPI Stats
+    const totalCitizens = citizens.length;
+    const totalInstitutes = healthInstitutes.length;
+    const totalRecords = healthRecords.length;
+    const activeInstitutes = healthInstitutes.filter(h => h.is_active).length;
+
+    // Calculate citizens per institute by district
+    const districtStats = {};
+    healthInstitutes.forEach(institute => {
+      const district = institute.address.split(' ').slice(-2, -1)[0];
+      if (!districtStats[district]) {
+        districtStats[district] = { institutes: 0, district };
+      }
+      districtStats[district].institutes += 1;
+    });
+
+    citizens.forEach(citizen => {
+      const district = citizen.address.split(' ').slice(-2, -1)[0];
+      if (districtStats[district]) {
+        districtStats[district].citizens = (districtStats[district].citizens || 0) + 1;
+      }
+    });
+
+    const resourceAllocation = Object.values(districtStats)
+      .map(d => ({
+        district: d.district,
+        ratio: d.citizens && d.institutes ? Math.round(d.citizens / d.institutes) : 0
+      }))
+      .sort((a, b) => b.ratio - a.ratio)
+      .slice(0, 10);
+
+    // Records over time data
+    const recordsByMonth = healthRecords.reduce((acc, record) => {
+      const month = new Date(record.issued_date).toLocaleString('default', { month: 'short', year: '2-digit' });
+      acc[month] = (acc[month] || 0) + 1;
+      return acc;
+    }, {});
+
+    const recordsTimeData = Object.entries(recordsByMonth)
+      .sort((a, b) => new Date('20' + a[0].split(' ')[1] + '-' + a[0].split(' ')[0]) - new Date('20' + b[0].split(' ')[1] + '-' + b[0].split(' ')[0]))
+      .slice(-12)
+      .map(([month, records]) => ({ month, records }));
+
+    // IPD vs OPD trend
+    const recordTypeByMonth = healthRecords.reduce((acc, record) => {
+      const month = new Date(record.issued_date).toLocaleString('default', { month: 'short', year: '2-digit' });
+      if (!acc[month]) acc[month] = { month, IPD: 0, OPD: 0 };
+      acc[month][record.record_type] = (acc[month][record.record_type] || 0) + 1;
+      return acc;
+    }, {});
+
+    const typeTimeData = Object.values(recordTypeByMonth)
+      .sort((a, b) => new Date('20' + a.month.split(' ')[1] + '-' + a.month.split(' ')[0]) - new Date('20' + b.month.split(' ')[1] + '-' + b.month.split(' ')[0]))
+      .slice(-12);
+
+    // Top 5 diagnoses for quick overview
+    const diagnosisData = healthRecords.reduce((acc, record) => {
+      acc[record.diagnosis] = (acc[record.diagnosis] || 0) + 1;
+      return acc;
+    }, {});
+    const topDiagnosesPreview = Object.entries(diagnosisData)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([name, value]) => ({ name, value }));
+
+    // Health coverage - citizens with records in last 6 months
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    const recentRecordNIDs = new Set(
+      healthRecords
+        .filter(r => new Date(r.issued_date) >= sixMonthsAgo)
+        .map(r => r.nid_number)
+    );
+    const coverageRate = ((recentRecordNIDs.size / totalCitizens) * 100).toFixed(1);
+
+    return (
+      <div className="space-y-6">
+        {/* KPI Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Citizens</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{totalCitizens.toLocaleString()}</p>
+              </div>
+              <div className="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-lg">
+                <Users className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
+              </div>
             </div>
-          )}
-        </div>
-        <div className="bg-indigo-100 dark:bg-indigo-900 p-3 rounded-lg">
-          <Icon className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-        </div>
-      </div>
-    </div>
-  );
-
-  const DashboardView = () => (
-    <div className="space-y-6">
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard 
-          title="Total Citizens" 
-          value={dashboardStats.totalCitizens} 
-          change={dashboardStats.citizenGrowth}
-          trend="up"
-          icon={Users} 
-        />
-        <StatCard 
-          title="Health Records" 
-          value={dashboardStats.totalRecords} 
-          change={dashboardStats.recordGrowth}
-          trend="up"
-          icon={FileText} 
-        />
-        <StatCard 
-          title="Active Hospitals" 
-          value={dashboardStats.activeHospitals} 
-          change={dashboardStats.hospitalGrowth}
-          trend="up"
-          icon={Hospital} 
-        />
-        <StatCard 
-          title="Monthly Visits" 
-          value={dashboardStats.monthlyVisits} 
-          change={dashboardStats.visitGrowth}
-          trend="up"
-          icon={Activity} 
-        />
-      </div>
-
-      {/* Disease Trends & Vaccination Coverage */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Disease Trends */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Top Health Conditions</h3>
-            <TrendingUp className="w-5 h-5 text-gray-400" />
           </div>
-          <div className="space-y-4">
-            {diseaseData.map((disease, index) => (
-              <div key={index} className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">{disease.name}</span>
-                    <span className="text-sm text-gray-600 dark:text-gray-400">{disease.cases.toLocaleString()} cases</span>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Health Institutes</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{totalInstitutes.toLocaleString()}</p>
+                <p className="text-xs text-green-600 dark:text-green-400 mt-1">{activeInstitutes} active</p>
+              </div>
+              <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-lg">
+                <Hospital className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Health Records</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{totalRecords.toLocaleString()}</p>
+              </div>
+              <div className="bg-pink-100 dark:bg-pink-900/30 p-3 rounded-lg">
+                <FileText className="w-8 h-8 text-pink-600 dark:text-pink-400" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Health Coverage (6mo)</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{coverageRate}%</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{recentRecordNIDs.size.toLocaleString()} citizens</p>
+              </div>
+              <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-lg">
+                <Activity className="w-8 h-8 text-green-600 dark:text-green-400" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Two column layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* IPD vs OPD Trend */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Patient Type Trends</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={typeTimeData}>
+                <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#374151' : '#e5e7eb'} />
+                <XAxis dataKey="month" stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <YAxis stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                    borderRadius: '0.5rem',
+                    color: isDarkMode ? '#f9fafb' : '#111827'
+                  }}
+                />
+                <Legend />
+                <Area type="monotone" dataKey="OPD" stackId="1" stroke="#10b981" fill="#10b981" fillOpacity={0.6} />
+                <Area type="monotone" dataKey="IPD" stackId="1" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.6} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Resource Allocation */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Resource Allocation (Citizens per Institute)</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={resourceAllocation}>
+                <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#374151' : '#e5e7eb'} />
+                <XAxis dataKey="district" stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <YAxis stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                    borderRadius: '0.5rem'
+                  }}
+                />
+                <Bar dataKey="ratio" fill="#ec4899" />
+              </BarChart>
+            </ResponsiveContainer>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Higher ratio indicates need for more healthcare facilities</p>
+          </div>
+        </div>
+
+        {/* Records Over Time and Top Diagnoses */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Health Records Over Time</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={recordsTimeData}>
+                <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#374151' : '#e5e7eb'} />
+                <XAxis dataKey="month" stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <YAxis stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                    borderRadius: '0.5rem',
+                    color: isDarkMode ? '#f9fafb' : '#111827'
+                  }}
+                />
+                <Legend />
+                <Line type="monotone" dataKey="records" stroke="#6366f1" strokeWidth={2} dot={{ fill: '#6366f1' }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top 5 Diagnoses</h3>
+            <div className="space-y-3">
+              {topDiagnosesPreview.map((diagnosis, idx) => (
+                <div key={diagnosis.name} className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold text-white ${idx === 0 ? 'bg-yellow-500' : idx === 1 ? 'bg-gray-400' : idx === 2 ? 'bg-orange-600' : 'bg-gray-300'
+                      }`}>
+                      {idx + 1}
+                    </div>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">{diagnosis.name}</span>
                   </div>
-                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div 
-                      className="bg-indigo-600 h-2 rounded-full" 
-                      style={{ width: `${(disease.cases / 10000) * 100}%` }}
-                    />
-                  </div>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">{diagnosis.value}</span>
                 </div>
-                <div className={`ml-4 flex items-center text-sm ${disease.trend === 'up' ? 'text-red-600' : 'text-green-600'}`}>
-                  {disease.trend === 'up' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
-                  <span className="ml-1">{Math.abs(disease.change)}%</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Vaccination Coverage */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Vaccination Coverage</h3>
-            <Activity className="w-5 h-5 text-gray-400" />
-          </div>
-          <div className="space-y-4">
-            {vaccinationData.map((vaccine, index) => (
-              <div key={index}>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">{vaccine.vaccine}</span>
-                  <span className="text-sm text-gray-600 dark:text-gray-400">{vaccine.coverage}% / {vaccine.target}%</span>
-                </div>
-                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
-                  <div 
-                    className={`h-3 rounded-full ${vaccine.coverage >= vaccine.target ? 'bg-green-500' : 'bg-yellow-500'}`}
-                    style={{ width: `${(vaccine.coverage / vaccine.target) * 100}%` }}
-                  />
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
+    );
+  };
 
-      {/* Recent Activities */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Activities</h3>
-        <div className="space-y-4">
-          {recentActivities.map(activity => (
-            <div key={activity.id} className="flex items-start space-x-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition">
-              <div className={`p-2 rounded-lg ${
-                activity.type === 'alert' ? 'bg-red-100 text-red-600' :
-                activity.type === 'hospital_registered' ? 'bg-green-100 text-green-600' :
-                'bg-blue-100 text-blue-600'
-              }`}>
-                {activity.type === 'alert' ? <AlertCircle className="w-5 h-5" /> :
-                 activity.type === 'hospital_registered' ? <CheckCircle className="w-5 h-5" /> :
-                 <FileText className="w-5 h-5" />}
+  const CitizensView = () => {
+    // Gender distribution
+    const genderData = citizens.reduce((acc, citizen) => {
+      acc[citizen.sex] = (acc[citizen.sex] || 0) + 1;
+      return acc;
+    }, {});
+    const genderChartData = Object.entries(genderData).map(([name, value]) => ({ name, value }));
+
+    // Blood group distribution
+    const bloodGroupData = citizens.reduce((acc, citizen) => {
+      acc[citizen.blood_group] = (acc[citizen.blood_group] || 0) + 1;
+      return acc;
+    }, {});
+    const bloodGroupChartData = Object.entries(bloodGroupData)
+      .sort((a, b) => b[1] - a[1])
+      .map(([name, value]) => ({ name, value }));
+
+    // Age distribution (calculate from date_of_birth)
+    const calculateAge = (dob) => {
+      const birthDate = new Date(dob);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      return age;
+    };
+
+    const ageGroups = {
+      '0-18': 0,
+      '19-30': 0,
+      '31-45': 0,
+      '46-60': 0,
+      '61+': 0
+    };
+
+    citizens.forEach(citizen => {
+      const age = calculateAge(citizen.date_of_birth);
+      if (age <= 18) ageGroups['0-18']++;
+      else if (age <= 30) ageGroups['19-30']++;
+      else if (age <= 45) ageGroups['31-45']++;
+      else if (age <= 60) ageGroups['46-60']++;
+      else ageGroups['61+']++;
+    });
+
+    const ageChartData = Object.entries(ageGroups).map(([name, value]) => ({ name, value }));
+
+    // District distribution
+    const districtData = citizens.reduce((acc, citizen) => {
+      const district = citizen.address.split(' ').slice(-2, -1)[0];
+      acc[district] = (acc[district] || 0) + 1;
+      return acc;
+    }, {});
+    const topDistricts = Object.entries(districtData)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([name, value]) => ({ name, value }));
+
+    // Health engagement stats
+    const citizensWithRecords = new Set(healthRecords.map(r => r.nid_number));
+    const engagementRate = ((citizensWithRecords.size / citizens.length) * 100).toFixed(1);
+
+    // Blood donor availability
+    const bloodDonorStats = Object.entries(bloodGroupData).map(([group, count]) => ({
+      bloodGroup: group,
+      donors: count,
+      percentage: ((count / citizens.length) * 100).toFixed(1)
+    })).sort((a, b) => b.donors - a.donors);
+
+    return (
+      <div className="space-y-6">
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Registered</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{citizens.length.toLocaleString()}</p>
               </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900 dark:text-white">{activity.hospital}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{activity.details}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">{activity.timestamp}</p>
+              <div className="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-lg">
+                <Users className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Health Engagement</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{engagementRate}%</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{citizensWithRecords.size.toLocaleString()} citizens</p>
+              </div>
+              <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-lg">
+                <Activity className="w-8 h-8 text-green-600 dark:text-green-400" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Districts Covered</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{Object.keys(districtData).length}</p>
+              </div>
+              <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-lg">
+                <MapPin className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Demographics Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Gender Distribution</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={genderChartData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {genderChartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                    borderRadius: '0.5rem'
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Age Distribution</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={ageChartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#374151' : '#e5e7eb'} />
+                <XAxis dataKey="name" stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <YAxis stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                    borderRadius: '0.5rem'
+                  }}
+                />
+                <Bar dataKey="value" fill="#8b5cf6" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Blood Group Distribution</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={bloodGroupChartData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {bloodGroupChartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                    borderRadius: '0.5rem'
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Geographic and Blood Donor Network */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top 10 Districts by Population</h3>
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart data={topDistricts} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#374151' : '#e5e7eb'} />
+                <XAxis type="number" stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <YAxis dataKey="name" type="category" width={100} stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                    borderRadius: '0.5rem'
+                  }}
+                />
+                <Bar dataKey="value" fill="#10b981" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center space-x-2">
+              <Droplet className="w-5 h-5 text-red-500" />
+              <span>Blood Donor Network</span>
+            </h3>
+            <div className="space-y-3">
+              {bloodDonorStats.map((stat, idx) => (
+                <div key={stat.bloodGroup} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                      <span className="text-lg font-bold text-red-600 dark:text-red-400">{stat.bloodGroup}</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">{stat.donors.toLocaleString()} Donors</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">{stat.percentage}% of population</p>
+                    </div>
+                  </div>
+                  <div className="w-16 h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-red-500"
+                      style={{ width: `${stat.percentage}%` }}
+                    ></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const HospitalNetworkView = () => {
+    // Hospitals by type
+    const typeData = healthInstitutes.reduce((acc, institute) => {
+      acc[institute.type] = (acc[institute.type] || 0) + 1;
+      return acc;
+    }, {});
+    const typeChartData = Object.entries(typeData).map(([name, value]) => ({
+      name: name.charAt(0).toUpperCase() + name.slice(1),
+      value
+    }));
+
+    // Hospitals by ownership
+    const ownershipData = healthInstitutes.reduce((acc, institute) => {
+      acc[institute.ownership] = (acc[institute.ownership] || 0) + 1;
+      return acc;
+    }, {});
+    const ownershipChartData = Object.entries(ownershipData).map(([name, value]) => ({
+      name: name.charAt(0).toUpperCase() + name.slice(1),
+      value
+    }));
+
+    // Hospitals by district (extract from address)
+    const districtData = healthInstitutes.reduce((acc, institute) => {
+      const district = institute.address.split(' ').slice(-2, -1)[0];
+      acc[district] = (acc[district] || 0) + 1;
+      return acc;
+    }, {});
+    const districtChartData = Object.entries(districtData)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([name, value]) => ({ name, value }));
+
+    // Active vs Inactive
+    const activeCount = healthInstitutes.filter(h => h.is_active).length;
+    const inactiveCount = healthInstitutes.length - activeCount;
+    const statusData = [
+      { name: 'Active', value: activeCount },
+      { name: 'Inactive', value: inactiveCount }
+    ];
+
+    // Records per institute (capacity indicator)
+    const recordsPerInstitute = healthRecords.reduce((acc, record) => {
+      acc[record.institute_id] = (acc[record.institute_id] || 0) + 1;
+      return acc;
+    }, {});
+
+    const instituteCapacity = healthInstitutes.map(institute => ({
+      name: institute.name.substring(0, 20) + (institute.name.length > 20 ? '...' : ''),
+      fullName: institute.name,
+      records: recordsPerInstitute[institute.institute_id] || 0,
+      type: institute.type
+    })).sort((a, b) => b.records - a.records).slice(0, 10);
+
+    // Filter and search logic
+    const filteredInstitutes = healthInstitutes.filter(institute => {
+      const matchesSearch = searchQuery === '' ||
+        institute.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        institute.license_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        institute.address.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesType = filterType === 'all' || institute.type === filterType;
+      const matchesOwnership = filterOwnership === 'all' || institute.ownership === filterOwnership;
+      const matchesStatus = filterStatus === 'all' ||
+        (filterStatus === 'active' && institute.is_active) ||
+        (filterStatus === 'inactive' && !institute.is_active);
+
+      return matchesSearch && matchesType && matchesOwnership && matchesStatus;
+    });
+
+    return (
+      <div className="space-y-6">
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {typeChartData.map((type, idx) => (
+            <div key={type.name} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{type.name}</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{type.value}</p>
+                </div>
+                <div className={`p-3 rounded-lg ${idx === 0 ? 'bg-indigo-100 dark:bg-indigo-900/30' :
+                  idx === 1 ? 'bg-purple-100 dark:bg-purple-900/30' :
+                    'bg-pink-100 dark:bg-pink-900/30'
+                  }`}>
+                  <Hospital className={`w-8 h-8 ${idx === 0 ? 'text-indigo-600 dark:text-indigo-400' :
+                    idx === 1 ? 'text-purple-600 dark:text-purple-400' :
+                      'text-pink-600 dark:text-pink-400'
+                    }`} />
+                </div>
               </div>
             </div>
           ))}
-        </div>
-      </div>
-    </div>
-  );
 
-  
-
-  const HospitalNetworkView = () => (
-    <div className="space-y-6">
-      {/* Hospital Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Hospitals</p>
-              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mt-1">234</h3>
-            </div>
-            <Hospital className="w-12 h-12 text-indigo-600" />
-          </div>
-        </div>
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Avg Compliance</p>
-              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mt-1">95%</h3>
-            </div>
-            <CheckCircle className="w-12 h-12 text-green-600" />
-          </div>
-        </div>
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Records Today</p>
-              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mt-1">1,234</h3>
-            </div>
-            <FileText className="w-12 h-12 text-blue-600" />
-          </div>
-        </div>
-      </div>
-
-      {/* Hospital List */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Hospital Network</h3>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-gray-700">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Hospital</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">District</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Type</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Records/Month</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Last Activity</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Compliance</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {mockHospitals.map(hospital => (
-                <tr key={hospital.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <Hospital className="w-5 h-5 text-gray-400 mr-3" />
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">{hospital.name}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">{hospital.district}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 text-xs rounded ${
-                      hospital.type === 'Public' 
-                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
-                        : 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300'
-                    }`}>
-                      {hospital.type}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">{hospital.recordsThisMonth.toLocaleString()}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">{hospital.lastActivity}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2 mr-2">
-                        <div 
-                          className={`h-2 rounded-full ${
-                            hospital.compliance >= 95 ? 'bg-green-500' : 
-                            hospital.compliance >= 85 ? 'bg-yellow-500' : 'bg-red-500'
-                          }`}
-                          style={{ width: `${hospital.compliance}%` }}
-                        />
-                      </div>
-                      <span className="text-sm text-gray-600 dark:text-gray-300">{hospital.compliance}%</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="px-2 py-1 text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 rounded">
-                      {hospital.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
-
-  return (
-    <div className={`min-h-screen ${isDarkMode ? 'dark' : ''}`}>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        {/* Header */}
-        <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center space-x-3">
-                <div className="bg-indigo-600 p-2 rounded-lg">
-                  <Shield className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-gray-900 dark:text-white">Government Portal</h1>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">Ministry of Health & Population</p>
-                </div>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Active Rate</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                  {((activeCount / healthInstitutes.length) * 100).toFixed(0)}%
+                </p>
               </div>
-
-              <div className="flex items-center space-x-4">
-                <button 
-                  onClick={() => setIsDarkMode(!isDarkMode)}
-                  className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition"
-                >
-                  {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                </button>
-                <div className="hidden sm:flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                  <Users className="w-4 h-4 text-gray-600 dark:text-gray-300" />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">{user?.name || 'Admin User'}</span>
-                </div>
-                <button 
-                  onClick={onLogout}
-                  className="hidden sm:flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition"
-                >
-                  <LogOut className="w-5 h-5" />
-                  <span>Logout</span>
-                </button>
-                <button
-                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="sm:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
-                >
-                  {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                </button>
+              <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-lg">
+                <Activity className="w-8 h-8 text-green-600 dark:text-green-400" />
               </div>
             </div>
           </div>
-        </header>
+        </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Navigation Tabs */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-2 mb-6">
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setActiveTab('dashboard')}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition ${
-                  activeTab === 'dashboard'
-                    ? 'bg-indigo-600 text-white'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
+        {/* Charts Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Ownership Distribution</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={ownershipChartData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {ownershipChartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                    borderRadius: '0.5rem'
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Active vs Inactive</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={statusData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent, value }) => `${name}: ${value} (${(percent * 100).toFixed(0)}%)`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  <Cell fill="#10b981" />
+                  <Cell fill="#ef4444" />
+                </Pie>
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                    borderRadius: '0.5rem'
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Top Performing Institutes and District Distribution */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top 10 Institutes by Patient Volume</h3>
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart data={instituteCapacity} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#374151' : '#e5e7eb'} />
+                <XAxis type="number" stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <YAxis
+                  dataKey="name"
+                  type="category"
+                  width={150}
+                  stroke={isDarkMode ? '#9ca3af' : '#6b7280'}
+                  tick={{ fontSize: 11 }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                    borderRadius: '0.5rem'
+                  }}
+                />
+                <Bar dataKey="records" fill="#f59e0b" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top 10 Districts by Institute Count</h3>
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart data={districtChartData} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#374151' : '#e5e7eb'} />
+                <XAxis type="number" stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <YAxis dataKey="name" type="category" width={100} stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                    borderRadius: '0.5rem'
+                  }}
+                />
+                <Bar dataKey="value" fill="#6366f1" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Search and Filter Section */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Search Health Institutes</h3>
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              {filteredInstitutes.length} of {healthInstitutes.length} institutes
+            </span>
+          </div>
+
+          {/* Search Bar */}
+          <div className="mb-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by name, license number, or address..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+
+          {/* Filters */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Type</label>
+              <select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
-                <BarChart3 className="w-5 h-5" />
-                <span>Dashboard</span>
-              </button>
-              {/* <button
-                onClick={() => setActiveTab('citizens')}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition ${
-                  activeTab === 'citizens'
-                    ? 'bg-indigo-600 text-white': 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-            }`}
-          >
-            <Users className="w-5 h-5" />
-            <span>Citizens</span>
-          </button> */}
-          <button
-            onClick={() => setActiveTab('hospitals')}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition ${
-              activeTab === 'hospitals'
-                ? 'bg-indigo-600 text-white'
-                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-            }`}
-          >
-            <Hospital className="w-5 h-5" />
-            <span>Hospitals</span>
-          </button>
+                <option value="all">All Types</option>
+                {Object.keys(typeData).map(type => (
+                  <option key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ownership</label>
+              <select
+                value={filterOwnership}
+                onChange={(e) => setFilterOwnership(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="all">All Ownership</option>
+                {Object.keys(ownershipData).map(ownership => (
+                  <option key={ownership} value={ownership}>{ownership.charAt(0).toUpperCase() + ownership.slice(1)}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="all">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Results Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+            {filteredInstitutes.length > 0 ? (
+              filteredInstitutes.map((institute) => (
+                <div key={institute.institute_id} className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-indigo-500 dark:hover:border-indigo-400 transition">
+                  <div className="flex items-start justify-between mb-2">
+                    <h4 className="font-semibold text-gray-900 dark:text-white text-sm">{institute.name}</h4>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${institute.is_active
+                      ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                      : 'bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-gray-300'
+                      }`}>
+                      {institute.is_active ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
+                  <div className="space-y-1 text-xs text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center space-x-2">
+                      <FileText className="w-3 h-3" />
+                      <span>{institute.license_number}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Hospital className="w-3 h-3" />
+                      <span className="capitalize">{institute.type} • {institute.ownership}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <MapPin className="w-3 h-3" />
+                      <span className="truncate">{institute.address}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Phone className="w-3 h-3" />
+                      <span>{institute.phone}</span>
+                    </div>
+                    <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-600">
+                      <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                        {recordsPerInstitute[institute.institute_id] || 0} records
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-8 text-gray-500 dark:text-gray-400">
+                No institutes found matching your criteria
+              </div>
+            )}
+          </div>
         </div>
       </div>
+    );
+  };
 
-      {/* Content Area */}
-      {activeTab === 'dashboard' && <DashboardView />}
-      {activeTab === 'hospitals' && <HospitalNetworkView />}
-    </div>
 
-    {/* Citizen Detail Modal */}
-    {selectedCitizen && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" onClick={() => setSelectedCitizen(null)}>
-        <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl" onClick={e => e.stopPropagation()}>
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{selectedCitizen.name}</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">NID: {selectedCitizen.nid}</p>
+
+
+
+
+
+
+  const HealthInsightsView = () => {
+    // Top 10 diagnoses
+    const diagnosisData = healthRecords.reduce((acc, record) => {
+      acc[record.diagnosis] = (acc[record.diagnosis] || 0) + 1;
+      return acc;
+    }, {});
+    const topDiagnoses = Object.entries(diagnosisData)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([name, value]) => ({ name, value }));
+
+    // Record types distribution
+    const recordTypeData = healthRecords.reduce((acc, record) => {
+      acc[record.record_type] = (acc[record.record_type] || 0) + 1;
+      return acc;
+    }, {});
+    const recordTypeChartData = Object.entries(recordTypeData).map(([name, value]) => ({ name, value }));
+
+    // District-wise health burden analysis
+    const districtHealthData = {};
+    healthRecords.forEach(record => {
+      const citizen = citizens.find(c => c.nid_number === record.nid_number);
+      if (citizen) {
+        const district = citizen.address.split(' ').slice(-2, -1)[0];
+        if (!districtHealthData[district]) {
+          districtHealthData[district] = { district, cases: 0, citizens: 0 };
+        }
+        districtHealthData[district].cases++;
+      }
+    });
+
+    // Count citizens per district
+    citizens.forEach(citizen => {
+      const district = citizen.address.split(' ').slice(-2, -1)[0];
+      if (districtHealthData[district]) {
+        districtHealthData[district].citizens++;
+      }
+    });
+
+    const districtHealthBurden = Object.values(districtHealthData)
+      .map(d => ({
+        district: d.district,
+        cases: d.cases,
+        rate: ((d.cases / d.citizens) * 100).toFixed(1),
+        citizens: d.citizens
+      }))
+      .sort((a, b) => b.rate - a.rate)
+      .slice(0, 10);
+
+    // Seasonal trends - diagnoses by month
+    const monthlyDiagnoses = {};
+    healthRecords.forEach(record => {
+      const month = new Date(record.issued_date).toLocaleString('default', { month: 'short' });
+      if (!monthlyDiagnoses[month]) {
+        monthlyDiagnoses[month] = {};
+      }
+      monthlyDiagnoses[month][record.diagnosis] = (monthlyDiagnoses[month][record.diagnosis] || 0) + 1;
+    });
+
+    // Get top 5 diagnoses for trend tracking
+    const top5Diagnoses = Object.entries(diagnosisData)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([name]) => name);
+
+    const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const seasonalTrendData = monthOrder.map(month => {
+      const dataPoint = { month };
+      top5Diagnoses.forEach(diagnosis => {
+        dataPoint[diagnosis] = (monthlyDiagnoses[month] && monthlyDiagnoses[month][diagnosis]) || 0;
+      });
+      return dataPoint;
+    }).filter(d => Object.keys(d).length > 1); // Remove months with no data
+
+    // Outbreak detection - recent spikes
+    const last30Days = new Date();
+    last30Days.setDate(last30Days.getDate() - 30);
+    const recentRecords = healthRecords.filter(r => new Date(r.issued_date) >= last30Days);
+    const recentDiagnosisData = recentRecords.reduce((acc, record) => {
+      acc[record.diagnosis] = (acc[record.diagnosis] || 0) + 1;
+      return acc;
+    }, {});
+
+    // Calculate percentage of total for each diagnosis in recent period
+    const outbreakAlerts = Object.entries(recentDiagnosisData)
+      .map(([diagnosis, count]) => ({
+        diagnosis,
+        count,
+        percentage: ((count / recentRecords.length) * 100).toFixed(1),
+        totalCases: diagnosisData[diagnosis]
+      }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
+    // Treatment patterns - IPD vs OPD by diagnosis
+    const treatmentPatterns = {};
+    healthRecords.forEach(record => {
+      if (!treatmentPatterns[record.diagnosis]) {
+        treatmentPatterns[record.diagnosis] = { IPD: 0, OPD: 0, diagnosis: record.diagnosis };
+      }
+      treatmentPatterns[record.diagnosis][record.record_type]++;
+    });
+
+    const treatmentPatternsData = Object.values(treatmentPatterns)
+      .map(d => ({
+        ...d,
+        total: d.IPD + d.OPD,
+        ipdRate: ((d.IPD / (d.IPD + d.OPD)) * 100).toFixed(0)
+      }))
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 8);
+
+    // Institute performance - records by institute type
+    const instituteTypePerformance = {};
+    healthRecords.forEach(record => {
+      const institute = healthInstitutes.find(h => h.institute_id === record.institute_id);
+      if (institute) {
+        const type = institute.type;
+        if (!instituteTypePerformance[type]) {
+          instituteTypePerformance[type] = { type, records: 0, institutes: 0 };
+        }
+        instituteTypePerformance[type].records++;
+      }
+    });
+
+    // Count institutes per type
+    healthInstitutes.forEach(institute => {
+      if (instituteTypePerformance[institute.type]) {
+        instituteTypePerformance[institute.type].institutes++;
+      }
+    });
+
+    const institutePerformanceData = Object.values(instituteTypePerformance)
+      .map(d => ({
+        ...d,
+        avgRecords: (d.records / d.institutes).toFixed(1),
+        type: d.type.charAt(0).toUpperCase() + d.type.slice(1)
+      }))
+      .sort((a, b) => b.avgRecords - a.avgRecords);
+
+    return (
+      <div className="space-y-6">
+        {/* Alert Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Diagnoses Types</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{Object.keys(diagnosisData).length}</p>
+              </div>
+              <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-lg">
+                <FileText className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+              </div>
             </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">IPD Cases</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                  {recordTypeData.IPD?.toLocaleString() || 0}
+                </p>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                  {((recordTypeData.IPD / healthRecords.length) * 100).toFixed(1)}% of total
+                </p>
+              </div>
+              <div className="bg-orange-100 dark:bg-orange-900/30 p-3 rounded-lg">
+                <Activity className="w-8 h-8 text-orange-600 dark:text-orange-400" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">OPD Cases</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                  {recordTypeData.OPD?.toLocaleString() || 0}
+                </p>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                  {((recordTypeData.OPD / healthRecords.length) * 100).toFixed(1)}% of total
+                </p>
+              </div>
+              <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-lg">
+                <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Outbreak Alerts */}
+        <div className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-xl shadow-sm border border-orange-200 dark:border-orange-800 p-6">
+          <div className="flex items-center space-x-3 mb-4">
+            <AlertTriangle className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Health Trends (Last 30 Days)</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            {outbreakAlerts.map((alert, idx) => (
+              <div key={alert.diagnosis} className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-orange-200 dark:border-orange-700">
+                <div className="flex items-center justify-between mb-2">
+                  <span className={`text-xs font-bold px-2 py-1 rounded ${idx === 0 ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+                    idx === 1 ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400' :
+                      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                    }`}>
+                    #{idx + 1}
+                  </span>
+                  <span className="text-lg font-bold text-gray-900 dark:text-white">{alert.count}</span>
+                </div>
+                <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">{alert.diagnosis}</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">{alert.percentage}% of recent cases</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Charts Row 1 */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top 10 Diagnoses</h3>
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart data={topDiagnoses} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#374151' : '#e5e7eb'} />
+                <XAxis type="number" stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <YAxis
+                  dataKey="name"
+                  type="category"
+                  width={120}
+                  stroke={isDarkMode ? '#9ca3af' : '#6b7280'}
+                  tick={{ fontSize: 11 }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                    borderRadius: '0.5rem'
+                  }}
+                />
+                <Bar dataKey="value" fill="#8b5cf6" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">District Health Burden (Cases per 100 Citizens)</h3>
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart data={districtHealthBurden} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#374151' : '#e5e7eb'} />
+                <XAxis type="number" stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <YAxis
+                  dataKey="district"
+                  type="category"
+                  width={100}
+                  stroke={isDarkMode ? '#9ca3af' : '#6b7280'}
+                  tick={{ fontSize: 11 }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                    borderRadius: '0.5rem'
+                  }}
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <div className="bg-white dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                          <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">{payload[0].payload.district}</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400">Health Cases: {payload[0].payload.cases}</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400">Citizens: {payload[0].payload.citizens}</p>
+                          <p className="text-xs font-medium text-red-600 dark:text-red-400">Rate: {payload[0].value}%</p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Bar dataKey="rate" fill="#10b981" name="Health Burden Rate (%)" />
+              </BarChart>
+            </ResponsiveContainer>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Districts with higher rates may need additional healthcare resources</p>
+          </div>
+        </div>
+
+        {/* Seasonal Trends */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Seasonal Health Trends (Top 5 Diagnoses)</h3>
+          <ResponsiveContainer width="100%" height={350}>
+            <LineChart data={seasonalTrendData}>
+              <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#374151' : '#e5e7eb'} />
+              <XAxis dataKey="month" stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+              <YAxis stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                  border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                  borderRadius: '0.5rem',
+                  color: isDarkMode ? '#f9fafb' : '#111827'
+                }}
+              />
+              <Legend />
+              {top5Diagnoses.map((diagnosis, idx) => (
+                <Line
+                  key={diagnosis}
+                  type="monotone"
+                  dataKey={diagnosis}
+                  stroke={COLORS[idx % COLORS.length]}
+                  strokeWidth={2}
+                  dot={{ fill: COLORS[idx % COLORS.length] }}
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Charts Row 2 */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Treatment Patterns (IPD vs OPD)</h3>
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart data={treatmentPatternsData} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#374151' : '#e5e7eb'} />
+                <XAxis type="number" stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <YAxis
+                  dataKey="diagnosis"
+                  type="category"
+                  width={100}
+                  stroke={isDarkMode ? '#9ca3af' : '#6b7280'}
+                  tick={{ fontSize: 11 }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                    borderRadius: '0.5rem'
+                  }}
+                />
+                <Legend />
+                <Bar dataKey="OPD" stackId="a" fill="#10b981" />
+                <Bar dataKey="IPD" stackId="a" fill="#f59e0b" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Institute Performance by Type</h3>
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart data={institutePerformanceData}>
+                <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#374151' : '#e5e7eb'} />
+                <XAxis dataKey="type" stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <YAxis stroke={isDarkMode ? '#9ca3af' : '#6b7280'} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                    borderRadius: '0.5rem'
+                  }}
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <div className="bg-white dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                          <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">{payload[0].payload.type}</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400">Avg Records: {payload[0].value}</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400">Total Records: {payload[0].payload.records}</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400">Institutes: {payload[0].payload.institutes}</p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Legend />
+                <Bar dataKey="avgRecords" fill="#6366f1" name="Avg Records per Institute" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Record Type Distribution */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Record Types Distribution</h3>
+          <div className="flex justify-center">
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={recordTypeChartData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent, value }) => `${name}: ${value} (${(percent * 100).toFixed(0)}%)`}
+                  outerRadius={100}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {recordTypeChartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                    borderRadius: '0.5rem'
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading data...</p>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Header */}
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-3">
+              <div className="bg-indigo-600 p-2 rounded-lg">
+                <Shield className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white">Government Portal</h1>
+                <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">Ministry of Health & Population</p>
+              </div>
+            </div><div className="flex items-center space-x-4">
+              <button
+                onClick={toggleDarkMode}
+                className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition"
+              >
+                {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+              <div className="hidden sm:flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                <Users className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                <span className="text-sm text-gray-700 dark:text-gray-300">{user?.name || 'Admin User'}</span>
+              </div>
+              <button
+                onClick={onLogout}
+                className="hidden sm:flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition"
+              >
+                <LogOut className="w-5 h-5" />
+                <span>Logout</span>
+              </button>
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="sm:hidden p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg"
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="sm:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             <button
-              onClick={() => setSelectedCitizen(null)}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition"
+              onClick={onLogout}
+              className="w-full flex items-center space-x-2 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
             >
-              <X className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+              <LogOut className="w-5 h-5" />
+              <span>Logout</span>
             </button>
           </div>
+        )}
+      </header>
 
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Age</h4>
-                <p className="text-gray-900 dark:text-white">{selectedCitizen.age} years</p>
-              </div>
-              <div>
-                <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">District</h4>
-                <p className="text-gray-900 dark:text-white">{selectedCitizen.district}</p>
-              </div>
-              <div>
-                <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Last Visit</h4>
-                <p className="text-gray-900 dark:text-white">{selectedCitizen.lastVisit}</p>
-              </div>
-              <div>
-                <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Visits</h4>
-                <p className="text-gray-900 dark:text-white">{selectedCitizen.totalVisits}</p>
-              </div>
-            </div>
-
-            <div>
-              <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Health Conditions</h4>
-              <div className="flex flex-wrap gap-2">
-                {selectedCitizen.conditions.map((condition, idx) => (
-                  <span key={idx} className="px-3 py-1 text-sm bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300 rounded-full">
-                    {condition}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Entitlements</h4>
-              <div className="flex flex-wrap gap-2">
-                {selectedCitizen.entitlements.map((entitlement, idx) => (
-                  <span key={idx} className="px-3 py-1 text-sm bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 rounded-full">
-                    {entitlement}
-                  </span>
-                ))}
-              </div>
-            </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Navigation Tabs */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-2 mb-6">
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setActiveTab('dashboard')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition ${activeTab === 'dashboard'
+                ? 'bg-indigo-600 text-white'
+                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`}
+            >
+              <BarChart3 className="w-5 h-5" />
+              <span>Dashboard</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('citizens')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition ${activeTab === 'citizens'
+                ? 'bg-indigo-600 text-white'
+                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`}
+            >
+              <Users className="w-5 h-5" />
+              <span>Citizens</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('hospitals')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition ${activeTab === 'hospitals'
+                ? 'bg-indigo-600 text-white'
+                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`}
+            >
+              <Hospital className="w-5 h-5" />
+              <span>Hospitals</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('insights')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition ${activeTab === 'insights'
+                ? 'bg-indigo-600 text-white'
+                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`}
+            >
+              <TrendingUp className="w-5 h-5" />
+              <span>Health Insights</span>
+            </button>
           </div>
         </div>
-      </div>
-    )}
-  </div>
-</div>);
-}
 
+        {/* Content Area */}
+        {activeTab === 'dashboard' && <DashboardView />}
+        {activeTab === 'citizens' && <CitizensView />}
+        {activeTab === 'hospitals' && <HospitalNetworkView />}
+        {activeTab === 'insights' && <HealthInsightsView />}
+      </div>
+    </div>);
+}
 export default GovDashboard;

@@ -13,7 +13,6 @@ function Login({ onLogin, onBack }) {
   const [nidNumber, setNidNumber] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   const handleLogin = async () => {
     if (!nidNumber.trim()) {
@@ -45,9 +44,9 @@ function Login({ onLogin, onBack }) {
       // Calculate age
       const dob = new Date(citizenData.date_of_birth);
       const today = new Date();
-      const age = today.getFullYear() - dob.getFullYear() - 
-        (today.getMonth() < dob.getMonth() || 
-         (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate()) ? 1 : 0);
+      const age = today.getFullYear() - dob.getFullYear() -
+        (today.getMonth() < dob.getMonth() ||
+          (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate()) ? 1 : 0);
 
       // Pass citizen data to parent
       onLogin({
@@ -72,22 +71,22 @@ function Login({ onLogin, onBack }) {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-900 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         {onBack && (
-          <button 
+          <button
             onClick={onBack}
             className="mb-4 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white flex items-center"
           >
             ← Back to portal selection
           </button>
         )}
-        
-        <div className="flex justify-end mb-4">
-          <button
-            onClick={toggleDarkMode}
-            className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition"
-          >
-            {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
-        </div>
+
+        {/* <div className="flex justify-end mb-4"> */}
+        {/*   <button */}
+        {/*     onClick={toggleDarkMode} */}
+        {/*     className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition" */}
+        {/*   > */}
+        {/*     {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />} */}
+        {/*   </button> */}
+        {/* </div> */}
 
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
@@ -109,37 +108,38 @@ function Login({ onLogin, onBack }) {
             </div>
           )}
 
-          <div>
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                National ID Number (NID)
-              </label>
-              <input
-                type="text"
-                value={nidNumber}
-                onChange={(e) => setNidNumber(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Enter your NID number (e.g., 104-332-181-9)"
-                disabled={loading}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition dark:bg-gray-700 dark:text-white disabled:opacity-50"
-              />
-            </div>
-
-            <button
-              onClick={handleLogin}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              National ID Number (NID)
+            </label>
+            <input
+              type="text"
+              value={nidNumber}
+              onChange={(e) => setNidNumber(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Enter your NID number (e.g., 104-332-181-9)"
               disabled={loading}
-              className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:bg-indigo-400 disabled:cursor-not-allowed flex items-center justify-center"
-            >
-              {loading ? (
-                <>
-                  <Loader className="w-5 h-5 mr-2 animate-spin" />
-                  Authenticating...
-                </>
-              ) : (
-                'Access My Records'
-              )}
-            </button>
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition dark:bg-gray-700 dark:text-white disabled:opacity-50"
+            />
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              Demo NID: <span className="font-mono font-semibold text-indigo-600 dark:text-indigo-400">005-991-542-3</span>
+            </p>
           </div>
+
+          <button
+            onClick={handleLogin}
+            disabled={loading}
+            className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:bg-indigo-400 disabled:cursor-not-allowed flex items-center justify-center"
+          >
+            {loading ? (
+              <>
+                <Loader className="w-5 h-5 mr-2 animate-spin" />
+                Authenticating...
+              </>
+            ) : (
+              'Access My Records'
+            )}
+          </button>
 
           <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
             <div className="flex items-start space-x-2 text-sm text-gray-600 dark:text-gray-300">

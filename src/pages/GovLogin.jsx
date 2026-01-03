@@ -14,7 +14,7 @@ function GovLogin({ onLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  // const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   const handleLogin = () => {
     setLoading(true);
@@ -32,12 +32,12 @@ function GovLogin({ onLogin }) {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100 dark:from-gray-900 dark:to-indigo-900 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         <div className="flex justify-end mb-4">
-          <button
-            onClick={toggleDarkMode}
-            className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition"
-          >
-            {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
+          {/* <button */}
+          {/*   onClick={toggleDarkMode} */}
+          {/*   className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition" */}
+          {/* > */}
+          {/*   {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />} */}
+          {/* </button> */}
         </div>
 
         <div className="text-center mb-8">

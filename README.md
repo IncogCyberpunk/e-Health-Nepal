@@ -29,7 +29,7 @@ A modern web application for managing centralized health records for citizens of
 ### Prerequisites
 
 - Node.js (v16 or higher)
-- npm or yarn
+- bun (preferred) or npm
 
 ### Installation
 
@@ -41,12 +41,12 @@ cd hackathon
 
 2. Install dependencies:
 ```bash
-npm install
+bun install
 ```
 
 3. Start the development server:
 ```bash
-npm run dev
+bun run dev
 ```
 
 4. Open your browser and navigate to `http://localhost:5173`
@@ -137,5 +137,4 @@ For support or inquiries, please contact:
 
 ---
 
-**Note**: This is a demonstration project. In production, this system would integrate with secure government databases and implement additional security measures including multi-factor authentication and end-to-end encryption.
 
