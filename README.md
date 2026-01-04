@@ -36,7 +36,7 @@ A modern web application for managing centralized health records for citizens of
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd hackathon
+cd E-Governance
 ```
 
 2. Install dependencies:
