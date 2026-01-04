@@ -30,6 +30,7 @@ A modern web application for managing centralized health records for citizens of
 
 - Node.js (v16 or higher)
 - bun (preferred) or npm
+- python3
 
 ### Installation
 
@@ -44,12 +45,32 @@ cd E-Governance
 bun install
 ```
 
-3. Start the development server:
+3. Create python virtual environment:
+```python
+python3 -m venv .venv
+```
+
+4. Source the virutal environment:
+```python
+source .venv/bin/activate
+```
+
+5. Install various python packages for data visualization:
+```python
+pip install -r scripts/requirements.txt
+```
+
+6. Enable periodic updates of data from DB for visualization:
+```python
+python3 scripts/pull.py
+```
+
+7. Start the development server:
 ```bash
 bun run dev
 ```
 
-4. Open your browser and navigate to `http://localhost:5173`
+8. Press **`o<Enter>`** to automatically open the app in the browser or to manually open the app, open your browser and navigate to **`http://localhost:5173`** 
 
 ### Navigation
 
