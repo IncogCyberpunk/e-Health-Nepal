@@ -1,4 +1,4 @@
-# E-Governance Nepal - Centralized Health Records System
+# e-Health Nepal - Centralized Health Records System
 
 A modern web application for managing centralized health records for citizens of Nepal. Built with React, Vite, and Tailwind CSS, this system provides secure access to medical records, lab reports, vaccinations, and prescriptions.
 
