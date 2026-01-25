@@ -42,7 +42,7 @@ function PortalSelection() {
 
 
         <h1 className="text-5xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-indigo-400 dark:to-blue-400 bg-clip-text text-transparent mb-4">
-          eHealth Nepal
+          e-Health Nepal
         </h1>
         <p className="text-2xl text-gray-700 dark:text-gray-300 font-semibold">
           Centralized Health Records System
